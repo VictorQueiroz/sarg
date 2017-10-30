@@ -6,6 +6,13 @@
   "scripts": {
     "test": "make test"
   },
+  "keywords": [
+    "test",
+    "tdd",
+    "bdd",
+    "tap",
+    "insurance"
+  ],
   "files": [
     "bin"
   ],
