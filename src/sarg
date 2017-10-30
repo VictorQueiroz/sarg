@@ -1,0 +1,201 @@
+#!/usr/bin/env node
+const glob = require('glob');
+const path = require('path');
+const difflet = require('difflet');
+
+const chalk = require('chalk');
+const fs = require('fs');
+const gaze = require('gaze');
+
+async function run({ files, bail }){
+    console.log();
+
+    let passed = 0,
+        failed = 0;
+
+    testsLoop:
+    for(let i = 0; i < files.length; i++){
+        let tests;
+
+        try {
+            tests = require(files[i]);
+
+            if(tests.__esModule)
+                tests = tests.default;
+        } catch(reason){
+            console.error(reason);
+            return false;
+        }
+
+
+        if(typeof tests === 'function'){
+            tests = Object.assign({}, tests());
+        }
+
+        for(let name of Object.keys(tests)){
+            console.log('%s ->', name);
+
+            let start = Date.now();
+
+            try {
+                await tests[name]();
+                console.log('%s (%sms)', chalk.green('ok'), Date.now() - start);
+                if(i <= files.length - 1)
+                    console.log();
+
+                passed++;
+            } catch(reason){
+                failed++;
+                console.log('%s (%sms)', chalk.red('failed'), Date.now() - start);
+
+                if(reason.name === 'AssertionError'){
+                    const result = difflet({ indent: 2, comment: true }).compare(
+                        reason.actual,
+                        reason.expected
+                    );
+
+                    console.log(result);
+                } else {
+                    console.error(reason);
+                }
+
+                console.log();
+                if(bail){
+                    clearCache();
+                    break testsLoop;
+                }
+            }
+        }
+
+        // invalidate require cache
+        clearCache();
+    }
+
+    console.log('---');
+    console.log('%s passed, %s failed', chalk.green(passed), chalk.red(failed));
+}
+
+function clearCache(){
+    for(let key of Object.keys(require.cache)){
+        delete require.cache[key];
+    }
+}
+
+function readArgs(args, options){
+    for(let i = 0; i < args.length; i++){
+        // support --arg="x", --arg=x and --arg='x'
+        if(args[i][0] === '-' && args[i].indexOf('=') > -1){
+            const slices = args[i].split('=');
+
+            if(slices[1] === '"' || slices[1] === "'")
+                slices[1] = slices[1].substring(1, slices[1].length - 1);
+
+            args.splice(i, 1, ...slices);
+            i--;
+            continue;
+        }
+
+        switch(args[i]){
+            case '-b':
+            case '--bail':
+                options.bail = true;
+                break;
+            case '--license':
+                console.log(fs.readFileSync(__dirname + '/../LICENSE').toString());
+                return true;
+            case '-v':
+            case '--version':
+                console.log(require('../package.json').name + ' ' + require('../package.json').version);
+                return true;
+            case '--require':
+                options.require.push(args[++i]);
+                break;
+            case '-w':
+            case '--watch':
+                options.watch = options.watch.concat(args[++i].split(','));
+                break;
+            case '--ignore':
+                options.ignore = options.ignore.concat(
+                    glob.sync(path.resolve(process.cwd(), args[++i]))
+                );
+                break;
+            case '-r':
+            case '--recursive':
+                options.pattern = path.resolve(process.cwd(), args[++i] + '/**/*.js');
+                break;
+            case '-h':
+            case '--help':
+                console.log('Usage:');
+                console.log('  sarg [OPTION] [FILE]');
+                console.log();
+                console.log('Help options:');
+                console.log('  -h, --help                     Show help options');
+                console.log();
+                console.log('Application options:');
+                console.log('  --license                      Show license information and exit');
+                console.log('  -v, --version                  Show version information and exit');
+                console.log('  -b, --bail                     Stop tests when one of them fail');
+                console.log('  -w, --watch=<pattern>          Watch pattern');
+                console.log('  --ignore=<pattern>             Ignore test files using the input pattern');
+                console.log('  -r, --recursive=<directory>    Execute all JS files recursively inside directory');
+                console.log('  --require=<path>               Execute NodeJS module before tests. Useful for executing ' +
+                                                            'transpiler registers like `ts-node/register` or `babel-register`');
+                return true;
+            default:
+                options.pattern = args[i];
+        }
+    }
+    return false;
+}
+
+async function bootstrap(){
+    const args = [].concat(process.argv);
+    const options = {
+        files: [],
+        pattern: '',
+        watch: [],
+        ignore: [],
+        bail: false,
+        require: []
+    };
+
+    if(readArgs(args.slice(2), options))
+        return false;
+
+    for(let i = 0; i < options.require.length; i++){
+        require(options.require[i]);
+    }
+
+    function getFiles() {
+        return glob.sync(options.pattern).map(file => (
+            path.resolve(process.cwd(), file)
+        ))
+        .filter(path => {
+            return options.ignore.indexOf(path) === -1;
+        });
+    }
+
+    let _runTestsTimer;
+
+    function runTests() {
+        clearTimeout(_runTestsTimer);
+        _runTestsTimer = setTimeout(() => {
+            run({
+                files: getFiles(),
+                bail: options.bail
+            });
+        }, 100);
+    }
+
+    if(options.watch.length){
+        const watcher = new gaze.Gaze(options.watch.map(dir => dir + '/**/*.js'));
+        watcher.on('changed', runTests);
+        watcher.on('added', runTests);
+    }
+
+    runTests();
+}
+
+bootstrap().catch(reason => {
+    console.log(reason);
+});
