@@ -166,6 +166,8 @@ async function bootstrap(){
         require(options.require[i]);
     }
 
+    options.files = getFiles();
+
     function getFiles() {
         return glob.sync(options.pattern).map(file => (
             path.resolve(process.cwd(), file)
@@ -181,16 +183,22 @@ async function bootstrap(){
         clearTimeout(_runTestsTimer);
         _runTestsTimer = setTimeout(() => {
             run({
-                files: getFiles(),
+                files: options.files,
                 bail: options.bail
             });
         }, 100);
     }
 
+    function updateFiles() {
+        options.files = getFiles();
+        runTests();
+    }
+
     if(options.watch.length){
         const watcher = new gaze.Gaze(options.watch.map(dir => dir + '/**/*.js'));
+        watcher.on('added', updateFiles);
         watcher.on('changed', runTests);
-        watcher.on('added', runTests);
+        watcher.on('deleted', updateFiles);
     }
 
     runTests();
