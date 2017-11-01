@@ -17,6 +17,8 @@ async function run({ files, bail }){
     for(let i = 0; i < files.length; i++){
         let tests;
 
+        console.log(files[i].replace(process.cwd() + '/', '') + ':');
+
         try {
             tests = require(files[i]);
 
