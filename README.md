@@ -46,7 +46,7 @@ exports['it should not go lower than 0'] = function() {
 Test it
 
 ```
-./node_modules/.bin/sarg --watch test.js
+./node_modules/.bin/sarg test.js
 ```
 
 ## Test-Driven Development
