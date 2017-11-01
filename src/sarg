@@ -135,7 +135,7 @@ function readArgs(args, options){
                 console.log('  --license                      Show license information and exit');
                 console.log('  -v, --version                  Show version information and exit');
                 console.log('  -b, --bail                     Stop tests when one of them fail');
-                console.log('  -w, --watch=<pattern>          Watch pattern');
+                console.log('  -w, --watch=<directories>      List of directories to watch. Each directory needs to be separated by comma (i.e. --watch=src,test)');
                 console.log('  --ignore=<pattern>             Ignore test files using the input pattern');
                 console.log('  -r, --recursive=<directory>    Execute all JS files recursively inside directory');
                 console.log('  --require=<path>               Execute NodeJS module before tests. Useful for executing ' +
