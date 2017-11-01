@@ -7,9 +7,11 @@ release: test
 
 test:
 	rm -rfv bin && \
-	NODE_ENV=testing ./src/sarg test/simple-test.js && \
+	./src/sarg test/simple-test.js && \
 	NODE_ENV=testing ./src/sarg --require ${PWD}/test/configure-enzyme.js --require ts-node/register test/typescript-test.js && \
 	NODE_ENV=testing ./src/sarg --require babel-register test/babel-test.js && \
-	NODE_ENV=testing ./src/sarg -b test/failed-comparison.js
+	./src/sarg -b test/failed-comparison.js && \
+	./src/sarg test/ignore-option/execute.js --ignore test/ignore-option/ignore.js && \
+	echo "\n\nSuccess"
 
 .PHONY: release test
