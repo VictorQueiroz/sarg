@@ -7,7 +7,7 @@ const chalk = require('chalk');
 const fs = require('fs');
 const gaze = require('gaze');
 
-async function run({ files, bail }){
+async function run({ files, bail, keepCache }){
     console.log();
 
     let passed = 0,
@@ -63,23 +63,24 @@ async function run({ files, bail }){
 
                 console.log();
                 if(bail){
-                    clearCache();
+                    clearCache(keepCache);
                     break testsLoop;
                 }
             }
         }
 
         // invalidate require cache
-        clearCache();
+        clearCache(keepCache);
     }
 
     console.log('---');
     console.log('%s passed, %s failed', chalk.green(passed), chalk.red(failed));
 }
 
-function clearCache(){
+function clearCache(keepCache){
     for(let key of Object.keys(require.cache)){
-        delete require.cache[key];
+        if(keepCache.indexOf(key) === -1)
+            delete require.cache[key];
     }
 }
 
@@ -158,7 +159,8 @@ async function bootstrap(){
         watch: [],
         ignore: [],
         bail: false,
-        require: []
+        require: [],
+        keepCache: []
     };
 
     if(readArgs(args.slice(2), options))
@@ -186,7 +188,8 @@ async function bootstrap(){
         _runTestsTimer = setTimeout(() => {
             run({
                 files: options.files,
-                bail: options.bail
+                bail: options.bail,
+                keepCache: options.keepCache
             });
         }, 100);
     }
@@ -202,6 +205,10 @@ async function bootstrap(){
         watcher.on('changed', runTests);
         watcher.on('deleted', updateFiles);
     }
+
+    Object.keys(require.cache).forEach(key => {
+        options.keepCache.push(key);
+    });
 
     runTests();
 }
