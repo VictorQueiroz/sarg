@@ -111,7 +111,7 @@ function readArgs(args, options){
                 console.log(require('../package.json').name + ' ' + require('../package.json').version);
                 return true;
             case '--require':
-                options.require.push(args[++i]);
+                require(args[++i]);
                 break;
             case '-w':
             case '--watch':
@@ -124,7 +124,7 @@ function readArgs(args, options){
                 break;
             case '-r':
             case '--recursive':
-                options.pattern = path.resolve(process.cwd(), args[++i] + '/**/*.js');
+                options.pattern = path.resolve(process.cwd(), args[++i] + '/**/*{' + Object.keys(require.extensions).join(',') + '}');
                 break;
             case '-h':
             case '--help':
@@ -159,16 +159,11 @@ async function bootstrap(){
         watch: [],
         ignore: [],
         bail: false,
-        require: [],
         keepCache: []
     };
 
     if(readArgs(args.slice(2), options))
         return false;
-
-    for(let i = 0; i < options.require.length; i++){
-        require(options.require[i]);
-    }
 
     options.files = getFiles();
 
