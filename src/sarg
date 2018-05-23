@@ -50,7 +50,7 @@ async function run({ files, bail, keepCache }){
                 failed++;
                 console.log('%s (%sms)', chalk.red('failed'), Date.now() - start);
 
-                if(reason.name === 'AssertionError'){
+                if(reason.code === 'ERR_ASSERTION'){
                     const result = difflet({ indent: 2, comment: true }).compare(
                         reason.actual,
                         reason.expected
