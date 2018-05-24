@@ -6,6 +6,10 @@ const difflet = require('difflet');
 const chalk = require('chalk');
 const fs = require('fs');
 const gaze = require('gaze');
+const diff = difflet({
+    indent: 2,
+    comment: true
+});
 
 async function run({ files, bail, keepCache }){
     console.log();
@@ -51,12 +55,7 @@ async function run({ files, bail, keepCache }){
                 console.log('%s (%sms)', chalk.red('failed'), Date.now() - start);
 
                 if(reason.code === 'ERR_ASSERTION'){
-                    const result = difflet({ indent: 2, comment: true }).compare(
-                        reason.actual,
-                        reason.expected
-                    );
-
-                    console.log(result);
+                    process.stdout.write(diff.compare(reason.actual, reason.expected));
                 } else {
                     console.error(reason);
                 }
