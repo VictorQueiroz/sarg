@@ -78,7 +78,7 @@ async function run({ files, bail, keepCache }){
 
 function clearCache(keepCache){
     for(let key of Object.keys(require.cache)){
-        if(keepCache.indexOf(key) === -1 && !/node_modules/.test(key))
+        if(keepCache.indexOf(key) === -1 && !/node_modules/.test(key) && !/\.node$/.test(key))
             delete require.cache[key];
     }
 }
