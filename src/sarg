@@ -112,7 +112,7 @@ function readArgs(args, options){
                 return true;
             case '-v':
             case '--version':
-                console.log(require('../package.json').name + ' ' + require('../package.json').version);
+                process.stdout.write(require('../package.json').name + ' ' + require('../package.json').version + '\n');
                 return true;
             case '--require':
                 require(args[++i]);
