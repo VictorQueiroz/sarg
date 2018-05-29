@@ -144,6 +144,7 @@ function readArgs(args, options){
                 process.stdout.write('  -b, --bail                     Stop tests when one of them fail\n');
                 process.stdout.write('  -w, --watch=<directories>      List of directories to watch. Each directory needs to be separated by comma (i.e. --watch=src,test)\n');
                 process.stdout.write('  --ignore=<pattern>             Ignore test files using the input pattern\n');
+                process.stdout.write('  --reload-timeout=<seconds>     Time to wait before reloading tests. Must be used together with --watch option\n');
                 process.stdout.write('  -r, --recursive=<directory>    Execute all JS files recursively inside directory\n');
                 process.stdout.write('  --require=<path>               Execute NodeJS module before tests. Useful for executing ' +
                                                             'transpiler registers like `ts-node/register` or `babel-register`\n');
@@ -168,7 +169,8 @@ async function bootstrap(){
         watch: [],
         ignore: [],
         bail: false,
-        keepCache: []
+        keepCache: [],
+        reloadWait: 100
     };
 
     if(readArgs(args.slice(2), options))
@@ -195,7 +197,7 @@ async function bootstrap(){
                 bail: options.bail,
                 keepCache: options.keepCache
             });
-        }, 100);
+        }, options.reloadWait);
     }
 
     function updateFiles() {
