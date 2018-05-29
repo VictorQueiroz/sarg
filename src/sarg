@@ -84,6 +84,9 @@ function clearCache(keepCache){
 }
 
 function readArgs(args, options){
+    if(args.length == 0)
+        args = ['--help'];
+
     for(let i = 0; i < args.length; i++){
         // support --arg="x", --arg=x and --arg='x'
         if(args[i][0] === '-' && args[i].indexOf('=') > -1){
