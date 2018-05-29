@@ -149,7 +149,12 @@ function readArgs(args, options){
                                                             'transpiler registers like `ts-node/register` or `babel-register`\n');
                 return true;
             default:
-                options.pattern = args[i];
+                if(args[i][0] == '-' || args[i].substring(0, 2) == '--') {
+                    process.stderr.write(`unrecognized option ${args[i]}\n`);
+                    process.exit(1);
+                    return true;
+                }
+                options.pattern = path.resolve(process.cwd(), args[i]);
         }
     }
     return false;
