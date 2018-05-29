@@ -199,7 +199,7 @@ async function bootstrap(){
     }
 
     if(options.watch.length){
-        const watcher = new gaze.Gaze(options.watch.map(dir => dir + '/**/*.js'));
+        const watcher = new gaze.Gaze(options.watch.map(dir => `${dir}/**/*.{${Object.keys(require.extensions).join(',')}}`));
         watcher.on('added', updateFiles);
         watcher.on('changed', runTests);
         watcher.on('deleted', updateFiles);
