@@ -127,21 +127,21 @@ function readArgs(args, options){
                 break;
             case '-h':
             case '--help':
-                console.log('Usage:');
-                console.log('  sarg [OPTION] [FILE]');
-                console.log();
-                console.log('Help options:');
-                console.log('  -h, --help                     Show help options');
-                console.log();
-                console.log('Application options:');
-                console.log('  --license                      Show license information and exit');
-                console.log('  -v, --version                  Show version information and exit');
-                console.log('  -b, --bail                     Stop tests when one of them fail');
-                console.log('  -w, --watch=<directories>      List of directories to watch. Each directory needs to be separated by comma (i.e. --watch=src,test)');
-                console.log('  --ignore=<pattern>             Ignore test files using the input pattern');
-                console.log('  -r, --recursive=<directory>    Execute all JS files recursively inside directory');
-                console.log('  --require=<path>               Execute NodeJS module before tests. Useful for executing ' +
-                                                            'transpiler registers like `ts-node/register` or `babel-register`');
+                process.stdout.write('Usage:\n');
+                process.stdout.write('  sarg [OPTION] [FILE]\n');
+                process.stdout.write('\n');
+                process.stdout.write('Help options:\n');
+                process.stdout.write('  -h, --help                     Show help options\n');
+                process.stdout.write('\n');
+                process.stdout.write('Application options:\n');
+                process.stdout.write('  --license                      Show license information and exit\n');
+                process.stdout.write('  -v, --version                  Show version information and exit\n');
+                process.stdout.write('  -b, --bail                     Stop tests when one of them fail\n');
+                process.stdout.write('  -w, --watch=<directories>      List of directories to watch. Each directory needs to be separated by comma (i.e. --watch=src,test)\n');
+                process.stdout.write('  --ignore=<pattern>             Ignore test files using the input pattern\n');
+                process.stdout.write('  -r, --recursive=<directory>    Execute all JS files recursively inside directory\n');
+                process.stdout.write('  --require=<path>               Execute NodeJS module before tests. Useful for executing ' +
+                                                            'transpiler registers like `ts-node/register` or `babel-register`\n');
                 return true;
             default:
                 options.pattern = args[i];
