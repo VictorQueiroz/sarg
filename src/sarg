@@ -106,7 +106,9 @@ function readArgs(args, options){
                 options.bail = true;
                 break;
             case '--license':
-                console.log(fs.readFileSync(__dirname + '/../LICENSE').toString());
+                fs.createReadStream(__dirname + '/../LICENSE').once('end', () => (
+                    process.stdout.write('\n')
+                )).pipe(process.stdout);
                 return true;
             case '-v':
             case '--version':
