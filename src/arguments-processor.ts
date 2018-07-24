@@ -46,6 +46,15 @@ export default class ArgumentsProcessor {
                         }
                     }
                     break;
+                case '--reporter': {
+                    const Reporter = require(require.resolve(argv[++i]));
+                    if(!Reporter)
+                        throw new Error('Reporter must be a class based on `Reporter` class');
+                    options.reporter = Reporter.default ?
+                                        new Reporter.default(process.stdout, process.stderr) :
+                                        new Reporter(process.stdout, process.stderr);
+                    break;
+                }
                 case '-v':
                 case '--version':
                     process.stdout.write(`${require('../package.json').version}\n`);
