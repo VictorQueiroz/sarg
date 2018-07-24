@@ -46,6 +46,10 @@ export default class ArgumentsProcessor {
                         }
                     }
                     break;
+                case '-v':
+                case '--version':
+                    process.stdout.write(`${require('../package.json').version}\n`);
+                    return;
                 default:
                     if(argv[i][0] == '-' || argv[i].substring(0, 2) == '--') {
                         process.stderr.write(`Invalid option ${argv[i]}\n`);
