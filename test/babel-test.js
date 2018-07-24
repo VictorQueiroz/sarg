@@ -1,33 +1,34 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import glob from 'glob';
 import path from 'path';
 import reducer from './reducers/counter';
 import * as actions from './reducers/counter';
+import { test } from '../lib';
 
-exports['it should work while importing modules'] = function() {
+test('it should work while importing modules', () => {
     assert.deepEqual(glob.sync(__dirname + '/../*.md'), [
         path.resolve(__dirname, '../README.md')
     ]);
-};
+});
 
-exports['its should work while importing modules'] = function() {
+test('its should work while importing modules', () => {
     assert.deepEqual(glob.sync(__dirname + '/../*.md'), [
         path.resolve(__dirname, '../README.md')
     ]);
-};
+});
 
-exports['it should return initial state'] = function() {
+test('it should return initial state', () => {
     assert.equal(reducer(undefined, {}), 0);
-};
+});
 
-exports['it should increase counter'] = function() {
+test('it should increase counter', () => {
     assert.equal(reducer(0, actions.increaseCounter()), 1);
-};
+});
 
-exports['it should decrease counter'] = function() {
+test('it should decrease counter', () => {
     assert.equal(reducer(1, actions.decreaseCounter()), 0);
-};
+});
 
-exports['it should not go lower than 0'] = function() {
+test('it should not go lower than 0', () => {
     assert.equal(reducer(0, actions.decreaseCounter()), 0);
-};
+});

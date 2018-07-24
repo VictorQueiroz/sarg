@@ -1,9 +1,10 @@
-const assert = require('assert');
+const { strict: assert } = require('assert');
+const { test } = require('../lib');
 
-exports['should not be equal'] = function() {
+test('should not be equal', function() {
     assert.deepEqual({a: 1}, {b: 2});
-};
+});
 
-exports['will never get executed'] = function() {
+test('will never get executed', function() {
     process.exit(-1);
-};
+});

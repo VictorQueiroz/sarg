@@ -1,5 +1,6 @@
 const assert = require('assert');
+const { test } = require('../../lib');
 
-exports['it should get executed'] = function() {
+test('it should get executed', function() {
     assert.ok(true);
-};
+});
