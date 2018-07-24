@@ -64,11 +64,6 @@ export default class Sarg {
 
         this.reporter.finished();
 
-        if(this.reporter.failuresCount > 0) {
-            process.exit(1);
-            return;
-        }
-
         for(const key of Object.keys(require.cache)) {
             if(key.indexOf('node_modules') != -1 || initialCache.indexOf(key) != -1)
                 continue;
