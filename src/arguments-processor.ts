@@ -5,7 +5,7 @@ import { SargOptions } from './sarg';
 export default class ArgumentsProcessor {
     constructor(private argv: string[]) {
     }
-    public getOptions(): SargOptions {
+    public getOptions(): SargOptions | void {
         const {
             argv
         } = this;

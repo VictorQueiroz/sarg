@@ -2,4 +2,6 @@
 
 const { sarg } = require('../lib');
 
-sarg.run();
+if(sarg) {
+    sarg.run();
+}
