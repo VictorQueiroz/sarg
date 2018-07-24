@@ -1,3 +1,4 @@
+import { createReadStream } from 'fs';
 import * as glob from 'glob';
 import ReporterDefault from './reporters/reporter-default';
 import { SargOptions } from './sarg';
@@ -58,6 +59,17 @@ export default class ArgumentsProcessor {
                 case '-v':
                 case '--version':
                     process.stdout.write(`${require('../package.json').version}\n`);
+                    return;
+                case '--license':
+                    createReadStream(__dirname + '/../LICENSE').on('close', () => {
+                        process.stdout.write('\n');
+                    }).pipe(process.stdout);
+                    return;
+                case '-h':
+                case '--help':
+                    createReadStream(__dirname + '/../HELP').on('close', () => {
+                        process.stdout.write('\n');
+                    }).pipe(process.stdout);
                     return;
                 default:
                     if(argv[i][0] == '-' || argv[i].substring(0, 2) == '--') {
