@@ -50,16 +50,17 @@ export default class Sarg {
                     this.reporter.failTest(reason);
 
                     if(this.options.bail) {
-                        this.reporter.endTest();
-                        this.reporter.endFile();
-                        this.reporter.finished();
-                        return;
+                        failed = true;
+                        break;
                     }
                 }
                 this.reporter.endTest();
             }
 
             this.reporter.endFile();
+
+            if(failed)
+                break;
         }
 
         this.reporter.finished();
