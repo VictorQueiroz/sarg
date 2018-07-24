@@ -1,0 +1,14 @@
+Usage:
+  sarg [OPTION] [FILE]
+Help options:
+  -h, --help                     Show help options
+Application options:
+  --license                      Show license information and exit
+  -v, --version                  Show version information and exit
+  -b, --bail                     Stop tests when one of them fail
+  --reporter=<module/path>       Specify a custom reporter instead of the default one
+  -w, --watch=<directories>      List of directories to watch. Each directory needs to be separated by comma (i.e. --watch=src,test)
+  --ignore=<pattern>             Ignore test files using the input pattern
+  --reload-timeout=<seconds>     Time to wait before reloading tests. Must be used together with --watch option
+  -r, --recursive=<directory>    Execute all JS files recursively inside directory
+  --require=<path>               Execute NodeJS module before tests. Useful for executing transpiler registers like `ts-node/register` or `babel-register`
