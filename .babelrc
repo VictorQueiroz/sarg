@@ -1,11 +1,7 @@
 {
 	"env": {
 		"production": {
-			"presets": ["es2015"],
-			"plugins": [
-				"transform-runtime",
-				"transform-regenerator"
-			]
+			"presets": ["env"]
 		},
         "testing": {
             "plugins": [
