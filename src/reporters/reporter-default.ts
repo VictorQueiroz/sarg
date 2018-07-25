@@ -65,6 +65,8 @@ export default class ReporterDefault extends Reporter {
             }
 
             process.stderr.write(`${strings.join('\n')}\n`);
+        } else {
+            console.error(this.failure);
         }
     }
 }
