@@ -78,22 +78,22 @@ export default class ArgumentsProcessor {
                     break;
                 case '-v':
                 case '--version':
-                    process.stdout.write(`${require('../package.json').version}\n`);
+                    this.stdout.write(`${require('../package.json').version}\n`);
                     return;
                 case '--license':
                     createReadStream(__dirname + '/../LICENSE').on('close', () => {
-                        process.stdout.write('\n');
-                    }).pipe(process.stdout);
+                        this.stdout.write('\n');
+                    }).pipe(this.stdout);
                     return;
                 case '-h':
                 case '--help':
                     createReadStream(__dirname + '/../HELP').on('close', () => {
-                        process.stdout.write('\n');
-                    }).pipe(process.stdout);
+                        this.stdout.write('\n');
+                    }).pipe(this.stdout);
                     return;
                 default:
                     if(argv[i][0] == '-' || argv[i].substring(0, 2) == '--') {
-                        process.stderr.write(`Invalid option ${argv[i]}\n`);
+                        this.stderr.write(`Invalid option ${argv[i]}\n`);
                         return;
                     }
                     options.files.push(...glob.sync(path.resolve(argv[i])));
