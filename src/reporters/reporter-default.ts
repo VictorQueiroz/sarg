@@ -4,16 +4,15 @@ import Reporter, { ReporterEvents } from './reporter';
 
 export default class ReporterDefault extends Reporter {
     public describe(event: ReporterEvents) {
-        const {
-            test,
-            filename
-        } = this;
+        let { filename } = this;
+        const { test } = this;
 
         switch(event) {
             case ReporterEvents.ReadFile:
                 if(!filename)
                     throw new Error('no filename specified');
 
+                filename = filename.replace(process.cwd() + '/', '');
                 this.stdout.write(`${chalk.white(filename)}:\n`);
                 break;
             case ReporterEvents.EndFile:
