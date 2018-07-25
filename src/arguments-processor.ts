@@ -94,8 +94,7 @@ export default class ArgumentsProcessor {
                 default:
                     if(argv[i][0] == '-' || argv[i].substring(0, 2) == '--') {
                         process.stderr.write(`Invalid option ${argv[i]}\n`);
-                        process.exit(1);
-                        return options;
+                        return;
                     }
                     options.files.push(...glob.sync(path.resolve(argv[i])));
             }
