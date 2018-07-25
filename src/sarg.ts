@@ -44,6 +44,8 @@ export default class Sarg {
             delete this.currentFile;
         }
 
+        let failed: boolean = false;
+
         for(const filename of Object.keys(this.tests)) {
             this.reporter.readFile(filename);
 
