@@ -45,8 +45,22 @@ export default class ArgumentsProcessor {
                         if(index != -1) {
                             options.files.splice(index, 1);
                         }
+                case '-w':
+                case '--watch': {
+                    let value: string | string[] = argv[++i];
+
+                    if(value.indexOf(',') != -1)
+                        value = value.split(',');
+                    else
+                        value = [value];
+
+                    if(!options.watch) {
+                        options.watch = value;
+                        break;
                     }
+                    options.watch.push(...value);
                     break;
+                }
                 case '--reporter': {
                     const Reporter = require(require.resolve(argv[++i]));
                     if(!Reporter)
