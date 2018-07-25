@@ -15,7 +15,7 @@ test: release
 		--require babel-register \
 		--ignore ./test/ignore-option/ignore.js \
 		--ignore ./test/failed-comparison.js \
-		"./test/**/*.{ts,js}"
+		"./test/**/*.js"
 
 tdd:
 	TS_NODE_PROJECT=$(PWD)/test $(SARG_EXEC) \
@@ -26,6 +26,6 @@ tdd:
 		--require babel-register \
 		--ignore ./test/ignore-option/ignore.js \
 		--ignore ./test/failed-comparison.js \
-		"./test/**/*.{ts,js}"
+		"./test/**/*.js"
 
 .PHONY: release test
