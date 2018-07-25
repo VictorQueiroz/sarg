@@ -65,7 +65,9 @@ export default class ReporterDefault extends Reporter {
 
             process.stderr.write(`${strings.join('\n')}\n`);
         } else {
+            /* tslint:disable no-console */
             console.error(this.failure);
+            /* tslint:enable no-console */
         }
     }
 }
