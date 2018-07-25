@@ -1,6 +1,6 @@
 # sarg
 
-Simple unit testing runner that will travel through your files letting you know what happened
+Simple unit testing runner that will travel through your files letting you know what happened. Simple fast and with TypeScript definitions included!
 
 ## Installation
 
@@ -25,22 +25,23 @@ Create your `test.js` file
 ```js
 const assert = require('assert');
 const reducer = require('./src/reducers/counter');
+const { test } = require('sarg');
 
-exports['it should return initial state'] = function() {
+test('it should return initial state', function() {
 	assert.equal(reducer(undefined, {}), 0);
-};
+});
 
-exports['it should increase counter'] = function() {
+test('it should increase counter', function() {
 	assert.equal(reducer(0, reducer.increaseCounter()), 1);
-};
+});
 
-exports['it should decrease counter'] = function() {
+test('it should decrease counter', function() {
 	assert.equal(reducer(1, reducer.decreaseCounter()), 0);
-};
+});
 
-exports['it should not go lower than 0'] = function() {
+test('it should not go lower than 0', function() {
 	assert.equal(reducer(0, reducer.decreaseCounter()), 0);
-};
+});
 ```
 
 Test it
@@ -54,12 +55,14 @@ Test it
 The `-w` command will watch changes in files for you.
 
 ```
-./node_modules/.bin/sarg -w test,src -r test --ignore test/client-test.js
+./node_modules/.bin/sarg -w test,src --ignore test/client-test.js "test/**/*.{js,tsx?}"
 ```
 
 ## Usage with transpilers
 
-You can use `--require` argument to load code that needs to be transpiled. It is an redundant argument so you can use how many compilers you need
+You can use `--require` argument to load code that needs to be transpiled. It is an redundant argument so you can use how many compilers you need.
+
+It works well with TypeScript and Babel register, you're free to use it together with no problem.
 
 ### Babel
 ```
@@ -77,41 +80,6 @@ You can use `--require` argument to load code that needs to be transpiled. It is
 	-r test
 ```
 
-## You're a free man
-
-Although it's not the main purpose of this project, still your test code will not be attached to any assertion library or testing framework. Nothing will stop you from doing:
-
-```js
-const test1 = require('./test.js');
-
-async function runTests(tests){
-    for(let i = 0; i < tests.length; i++){
-        for(let name of Object.keys(tests[i])){
-            try {
-                console.log(name);
-                await tests[i][name]();
-                console.log('Success!')
-                console.log();
-            } catch(reason){
-                console.error('Failed');
-                console.error(reason);
-            }
-        }
-    }
-}
-
-runTests([
-    test1
-])
-.then(() => {
-    process.exit(0);
-})
-.catch(reason => {
-    console.error(reason);
-    process.exit(-1);
-});
-```
-
 ## Reporters
 
-Unfortunately we don't have supports for custom reporters just yet
+Reporters are now available, you can easily extend the base reporter and create your own. Click [here](src/reporters/reporter.ts) and create your first one.
