@@ -8,6 +8,7 @@
         "eofline": false,
         "trailing-comma": false,
         "quotemark": false,
+        "no-angle-bracket-type-assertion": false,
         "whitespace": false,
         "triple-equals": false,
         "interface-name": false,
