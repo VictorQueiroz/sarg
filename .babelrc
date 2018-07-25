@@ -1,12 +1,6 @@
 {
-	"env": {
-		"production": {
-			"presets": ["env"]
-		},
-        "testing": {
-            "plugins": [
-                "transform-es2015-modules-commonjs"
-            ]
-        }
-	}
+    "presets": [
+        "react",
+        "env"
+    ]
 }
