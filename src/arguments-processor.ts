@@ -13,6 +13,7 @@ export default class ArgumentsProcessor {
         const options: SargOptions = {
             files: [],
             reporter: new ReporterDefault(process.stdout, process.stderr)
+            ignore: [],
         };
 
         argv.shift(); // node executable
@@ -40,11 +41,8 @@ export default class ArgumentsProcessor {
                     require(argv[++i]);
                     break;
                 case '--ignore':
-                    for(const file of glob.sync(argv[++i])) {
-                        const index = options.files.indexOf(file);
-                        if(index != -1) {
-                            options.files.splice(index, 1);
-                        }
+                    options.ignore.push(argv[++i]);
+                    break;
                 case '-w':
                 case '--watch': {
                     let value: string | string[] = argv[++i];
@@ -92,6 +90,21 @@ export default class ArgumentsProcessor {
                         return options;
                     }
                     options.files.push(...glob.sync(argv[i]));
+            }
+        }
+
+        for(const ignore of options.ignore) {
+            let files: string[];
+            if(glob.hasMagic(ignore)) {
+                files = glob.sync(path.resolve(ignore));
+            } else {
+                files = [path.resolve(ignore)];
+            }
+
+            for(let i = 0; i < options.files.length; i++) {
+                if(files.indexOf(options.files[i]) != -1) {
+                    options.files.splice(i, 1);
+                }
             }
         }
 

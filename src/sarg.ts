@@ -3,9 +3,10 @@ import Reporter from './reporters/reporter';
 import Test from './test';
 
 export interface SargOptions {
-    watch?: boolean;
+    watch?: string[];
     files: string[];
     bail?: boolean;
+    ignore: string[];
     reporter: Reporter;
 }
 
