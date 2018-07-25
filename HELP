@@ -10,5 +10,4 @@ Application options:
   -w, --watch=<directories>      List of directories to watch. Each directory needs to be separated by comma (i.e. --watch=src,test)
   --ignore=<pattern>             Ignore test files using the input pattern
   --reload-timeout=<seconds>     Time to wait before reloading tests. Must be used together with --watch option
-  -r, --recursive=<directory>    Execute all JS files recursively inside directory
   --require=<path>               Execute NodeJS module before tests. Useful for executing transpiler registers like `ts-node/register` or `babel-register`
