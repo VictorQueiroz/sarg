@@ -51,6 +51,7 @@ export default class Sarg {
 
             for(const test of this.tests[filename]) {
                 this.reporter.startTest(test);
+
                 try {
                     await test.run();
                     this.reporter.succeedTest();
@@ -78,6 +79,10 @@ export default class Sarg {
                 continue;
 
             delete require.cache[key];
+        }
+
+        for(const test of Object.keys(this.tests)) {
+            delete this.tests[test];
         }
         this.running = false;
     }
