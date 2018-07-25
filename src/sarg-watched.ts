@@ -1,16 +1,20 @@
 import * as chokidar from 'chokidar';
 import Sarg, { SargOptions } from './sarg';
 
+export type SargWatchedOptions = SargOptions & {
+    watch: string[];
+};
+
 export default class SargWatched extends Sarg {
     private watcher: chokidar.FSWatcher;
     private runTestsTimer?: NodeJS.Timer;
 
-    constructor(options: SargOptions) {
+    constructor(options: SargWatchedOptions) {
         super(options);
 
         this.onFileChanged = this.onFileChanged.bind(this);
 
-        this.watcher = chokidar.watch(options.watch || []);
+        this.watcher = chokidar.watch(options.watch);
         this.watcher.on('change', this.onFileChanged);
     }
 

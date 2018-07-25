@@ -10,10 +10,18 @@ const options = new ArgumentsProcessor(
     process.stderr
 ).getOptions();
 
-if(options && !options.watch)
+if(options && !options.watch) {
     instance = new Sarg(options);
-else if(options && options.watch)
-    instance = new SargWatched(options);
+} else if(options && Array.isArray(options.watch)) {
+    const {
+        watch,
+    } = options;
+
+    instance = new SargWatched({
+        ...options,
+        watch
+    });
+}
 
 export const sarg = instance;
 export function test(label: string, executor: TestExecutor) {
