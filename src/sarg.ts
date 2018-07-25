@@ -15,9 +15,14 @@ export default class Sarg {
     } = {};
     private reporter: Reporter;
     private currentFile?: string;
+    private running: boolean = false;
 
     constructor(private options: SargOptions) {
         this.reporter = options.reporter;
+    }
+
+    public isRunning() {
+        return this.running;
     }
 
     /**
@@ -29,6 +34,7 @@ export default class Sarg {
     }
 
     public async run() {
+        this.running = true;
         const initialCache = Object.keys(require.cache);
 
         for(const file of this.options.files) {
@@ -71,6 +77,7 @@ export default class Sarg {
 
             delete require.cache[key];
         }
+        this.running = false;
     }
 
     public addTest(test: Test, filename: string) {
