@@ -35,6 +35,10 @@ export default class Sarg {
     }
 
     public async run() {
+        if(this.running) {
+            throw new Error('invalid run command');
+        }
+
         this.running = true;
         const initialCache = Object.keys(require.cache);
 
