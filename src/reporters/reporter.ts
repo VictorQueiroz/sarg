@@ -29,8 +29,8 @@ export default abstract class Reporter {
      */
     public filename?: string;
 
-    public failuresCount: number = -1;
-    public successesCount: number = -1;
+    public failuresCount: number = 0;
+    public successesCount: number = 0;
 
     /**
      * Current failure description object. It'll be
