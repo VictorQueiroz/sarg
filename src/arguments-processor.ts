@@ -1,5 +1,6 @@
 import { createReadStream } from 'fs';
 import * as glob from 'glob';
+import * as path from 'path';
 import ReporterDefault from './reporters/reporter-default';
 import { SargOptions } from './sarg';
 
@@ -89,7 +90,7 @@ export default class ArgumentsProcessor {
                         process.exit(1);
                         return options;
                     }
-                    options.files.push(...glob.sync(argv[i]));
+                    options.files.push(...glob.sync(path.resolve(argv[i])));
             }
         }
 
