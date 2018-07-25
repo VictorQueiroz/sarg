@@ -41,8 +41,6 @@ export default abstract class Reporter {
     /* tslint:enable member-access */
     public readFile(filename: string) {
         this.filename = filename;
-        this.failuresCount = 0;
-        this.successesCount = 0;
         this.describe(ReporterEvents.ReadFile);
     }
     public endFile() {
