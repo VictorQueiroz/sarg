@@ -30,7 +30,6 @@
     "glob": "^7.1.2"
   },
   "devDependencies": {
-    "@types/chalk": "^2.2.0",
     "@types/chokidar": "^1.7.5",
     "@types/glob": "^5.0.35",
     "@types/node": "^10.5.2",
