@@ -3,11 +3,13 @@ import Sarg, { SargOptions } from './sarg';
 
 export type SargWatchedOptions = SargOptions & {
     watch: string[];
+    reloadTimeout: number;
 };
 
 export default class SargWatched extends Sarg {
     private watcher: chokidar.FSWatcher;
     private runTestsTimer?: NodeJS.Timer;
+    private reloadTimeout: number;
 
     constructor(options: SargWatchedOptions) {
         super(options);
@@ -16,6 +18,8 @@ export default class SargWatched extends Sarg {
 
         this.watcher = chokidar.watch(options.watch);
         this.watcher.on('change', this.onFileChanged);
+
+        this.reloadTimeout = options.reloadTimeout;
     }
 
     private onFileChanged() {
@@ -25,6 +29,6 @@ export default class SargWatched extends Sarg {
         if(this.runTestsTimer) {
             clearTimeout(this.runTestsTimer);
         }
-        this.runTestsTimer = setTimeout(() => this.run(), 100);
+        this.runTestsTimer = setTimeout(() => this.run(), this.reloadTimeout);
     }
 }

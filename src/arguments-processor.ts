@@ -73,6 +73,9 @@ export default class ArgumentsProcessor {
                                         new Reporter(this.stdout, this.stderr);
                     break;
                 }
+                case '--reload-timeout':
+                    options.reloadTimeout = parseInt(argv[++i], 10);
+                    break;
                 case '-v':
                 case '--version':
                     process.stdout.write(`${require('../package.json').version}\n`);

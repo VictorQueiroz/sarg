@@ -8,6 +8,7 @@ export interface SargOptions {
     bail?: boolean;
     ignore: string[];
     reporter: Reporter;
+    reloadTimeout?: number;
 }
 
 export default class Sarg {

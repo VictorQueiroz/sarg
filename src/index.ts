@@ -15,9 +15,11 @@ if(options && !options.watch) {
 } else if(options && Array.isArray(options.watch)) {
     const {
         watch,
+        reloadTimeout = 0
     } = options;
 
     instance = new SargWatched({
+        reloadTimeout,
         ...options,
         watch
     });
