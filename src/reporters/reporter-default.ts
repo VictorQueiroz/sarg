@@ -51,30 +51,44 @@ export default class ReporterDefault extends Reporter {
                 }
         }
     }
+
+    private reindent(text: string, indent: number = 2): string {
+        const strings = text.split('\n');
+
+        for(let i = 0; i < strings.length; i++) {
+            for(let j = 0; j < indent; j++) {
+                strings[i] = ' ' + strings[i];
+            }
+        }
+
+        strings.push('');
+        strings.push('');
+
+        return strings.join('\n');
+    }
+
     private printReadableFailure() {
-        let strings: string[] = [];
         if(this.failure instanceof AssertionError) {
+            let text: string;
+
             if(!strict) {
                 const diff = require('difflet')({
                     indent: 2
                 });
 
-                strings = diff.compare(this.failure.expected, this.failure.actual).split('\n');
+                text = diff.compare(this.failure.expected, this.failure.actual);
             } else {
-                strings = this.failure.message.split('\n');
+                text = this.failure.message;
             }
 
-            strings.unshift('');
-
-            for(let i = 0; i < strings.length; i++) {
-                strings[i] = '  ' + strings[i];
-            }
-
-            process.stderr.write(`${strings.join('\n')}\n`);
+            process.stderr.write(this.reindent(text, 2));
+            process.stderr.write('\n');
+        } else if(this.failure instanceof Error) {
+            process.stderr.write(
+                this.reindent(this.failure.stack ? this.failure.stack : this.failure.message, 2)
+            );
         } else {
-            /* tslint:disable no-console */
-            console.error(this.failure);
-            /* tslint:enable no-console */
+            process.stderr.write(this.reindent(JSON.stringify(this.failure), 2));
         }
     }
 }
