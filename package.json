@@ -24,12 +24,13 @@
   "dependencies": {
     "babel-runtime": "^6.26.0",
     "chalk": "^2.4.1",
+    "chokidar": "^2.0.4",
     "difflet": "^1.0.1",
-    "gaze": "^1.1.2",
     "glob": "^7.1.2"
   },
   "devDependencies": {
     "@types/chalk": "^2.2.0",
+    "@types/chokidar": "^1.7.5",
     "@types/glob": "^5.0.35",
     "@types/node": "^10.5.2",
     "@types/react": "^16.0.18",
@@ -41,11 +42,13 @@
     "babel-plugin-transform-regenerator": "^6.26.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
     "babel-register": "^6.26.0",
     "enzyme": "^3.1.0",
     "enzyme-adapter-react-16": "^1.0.2",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
+    "sinon": "^6.1.4",
     "ts-node": "^3.3.0",
     "typescript": "^3.1.0-dev.20180721"
   }
