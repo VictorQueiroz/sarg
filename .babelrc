@@ -1,6 +1,18 @@
 {
     "presets": [
-        "react",
-        "env"
-    ]
+        "react"
+    ],
+    "env": {
+        "development": {
+            "presets": [
+                ["env", {
+                    "targets": { "node": "current" },
+                    "modules": "commonjs"
+                }]
+            ]
+        },
+        "production": {
+            "presets": ["env"]
+        }
+    }
 }
