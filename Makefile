@@ -9,11 +9,23 @@ release:
 
 test: release
 	TS_NODE_PROJECT=$(PWD)/test $(SARG_EXEC) \
+		--bail \
 		--require $(PWD)/test/configure-enzyme.js \
 		--require ts-node/register \
 		--require babel-register \
 		--ignore ./test/ignore-option/ignore.js \
 		--ignore ./test/failed-comparison.js \
-		"./test/**/*.js"
+		"./test/**/*.{ts,js}"
+
+tdd:
+	TS_NODE_PROJECT=$(PWD)/test $(SARG_EXEC) \
+		--bail \
+		--watch test,src \
+		--require $(PWD)/test/configure-enzyme.js \
+		--require ts-node/register \
+		--require babel-register \
+		--ignore ./test/ignore-option/ignore.js \
+		--ignore ./test/failed-comparison.js \
+		"./test/**/*.{ts,js}"
 
 .PHONY: release test
