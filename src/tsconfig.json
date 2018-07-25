@@ -1,7 +1,6 @@
 {
-  "files": [
-    "./sarg.ts",
-    "./index.ts",
+  "include": [
+    "./**/*.ts",
   ],
   "compilerOptions": {
     "target": "ES3",
