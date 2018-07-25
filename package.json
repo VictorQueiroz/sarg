@@ -16,6 +16,7 @@
   "files": [
     "bin"
   ],
+  "typings": "./lib/index.d.ts",
   "bin": {
     "sarg": "./bin/sarg"
   },
