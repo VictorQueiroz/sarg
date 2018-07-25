@@ -4,7 +4,11 @@ import SargWatched from './sarg-watched';
 import Test, { TestExecutor } from './test';
 
 let instance: Sarg | undefined;
-const options = new ArgumentsProcessor(process.argv).getOptions();
+const options = new ArgumentsProcessor(
+    process.argv,
+    process.stdout,
+    process.stderr
+).getOptions();
 
 if(options && !options.watch)
     instance = new Sarg(options);

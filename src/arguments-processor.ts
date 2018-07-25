@@ -5,7 +5,11 @@ import ReporterDefault from './reporters/reporter-default';
 import { SargOptions } from './sarg';
 
 export default class ArgumentsProcessor {
-    constructor(private argv: string[]) {
+    constructor(
+        private argv: string[],
+        private stdout: NodeJS.WriteStream,
+        private stderr: NodeJS.WriteStream
+    ) {
     }
     public getOptions(): SargOptions | void {
         const {
@@ -13,8 +17,8 @@ export default class ArgumentsProcessor {
         } = this;
         const options: SargOptions = {
             files: [],
-            reporter: new ReporterDefault(process.stdout, process.stderr)
             ignore: [],
+            reporter: new ReporterDefault(this.stdout, this.stderr)
         };
 
         argv.shift(); // node executable
@@ -65,8 +69,8 @@ export default class ArgumentsProcessor {
                     if(!Reporter)
                         throw new Error('Reporter must be a class based on `Reporter` class');
                     options.reporter = Reporter.default ?
-                                        new Reporter.default(process.stdout, process.stderr) :
-                                        new Reporter(process.stdout, process.stderr);
+                                        new Reporter.default(this.stdout, this.stderr) :
+                                        new Reporter(this.stdout, this.stderr);
                     break;
                 }
                 case '-v':
