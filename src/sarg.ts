@@ -44,9 +44,15 @@ export default class Sarg {
         const initialCache = Object.keys(require.cache);
 
         for(const file of this.options.files) {
+            this.reporter.requireFile(file);
             this.currentFile = file;
             const target = path.resolve(process.cwd(), file);
-            require(target);
+            try {
+                require(target);
+                this.reporter.succeedRequire();
+            } catch(reason) {
+                this.reporter.failRequire(reason);
+            }
             delete this.currentFile;
         }
 

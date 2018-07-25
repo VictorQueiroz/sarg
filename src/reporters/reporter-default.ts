@@ -26,6 +26,13 @@ export default class ReporterDefault extends Reporter {
                 this.stdout.write(chalk.red(`\u2715 ${Math.max(0, this.failuresCount)} tests failed\n`));
                 this.stdout.write('\n');
                 break;
+            case ReporterEvents.FailRequire:
+                if(!filename)
+                    throw new Error('no filename specified');
+
+                this.stderr.write(chalk.red(`\u2715 failed to load ${filename}\n`));
+                this.printReadableFailure();
+                break;
             case ReporterEvents.SucceedTest:
             case ReporterEvents.FailTest:
                 if(!test)

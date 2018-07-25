@@ -15,13 +15,17 @@ export enum ReporterEvents {
      * of current file
      */
     EndFile,
-    Finished
+    Finished,
+    RequireFile,
+    FailRequire,
+    SucceedRequire
 }
 
 export default abstract class Reporter {
     public test?: Test;
     /**
-     * Filename which holds current test
+     * Filename which holds current test or is being loaded
+     * currently
      */
     public filename?: string;
 
@@ -69,5 +73,19 @@ export default abstract class Reporter {
     public endTest() {
         this.describe(ReporterEvents.EndTest);
         delete this.test;
+    }
+    public requireFile(filename: string) {
+        this.filename = filename;
+        this.describe(ReporterEvents.RequireFile);
+    }
+    public succeedRequire() {
+        this.describe(ReporterEvents.SucceedRequire);
+        delete this.filename;
+    }
+    public failRequire(failure: any) {
+        this.failure = failure;
+        this.describe(ReporterEvents.FailRequire);
+        delete this.failure;
+        delete this.filename;
     }
 }
