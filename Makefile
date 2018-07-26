@@ -28,4 +28,15 @@ tdd:
 		--ignore ./test/failed-comparison.js \
 		"./test/**/*.js"
 
+coverage:
+	TS_NODE_PROJECT=$(PWD)/test ./node_modules/.bin/nyc $(SARG_EXEC) \
+		--bail \
+		--require $(PWD)/test/configure-enzyme.js \
+		--require ts-node/register \
+		--require babel-register \
+		--require source-map-support/register \
+		--ignore ./test/ignore-option/ignore.js \
+		--ignore ./test/failed-comparison.js \
+		"./test/**/*.js"
+
 .PHONY: release test
