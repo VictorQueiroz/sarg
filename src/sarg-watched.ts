@@ -22,6 +22,10 @@ export default class SargWatched extends Sarg {
         this.reloadTimeout = options.reloadTimeout;
     }
 
+    public destroy() {
+        this.watcher.close();
+    }
+
     private onFileChanged() {
         if(this.isRunning()) {
             return;
