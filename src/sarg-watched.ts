@@ -24,6 +24,7 @@ export default class SargWatched extends Sarg {
 
     public destroy() {
         this.watcher.close();
+        super.destroy();
     }
 
     private onFileChanged() {
