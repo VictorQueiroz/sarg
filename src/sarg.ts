@@ -105,4 +105,10 @@ export default class Sarg {
 
         this.tests[filename].push(test);
     }
+
+    public destroy() {
+        if(this.running) {
+            throw new Error('Test runner can only be destroyed after tests are finished');
+        }
+    }
 }
