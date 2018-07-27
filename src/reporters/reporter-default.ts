@@ -1,5 +1,6 @@
 import { AssertionError } from 'assert';
 import chalk from 'chalk';
+import * as path from 'path';
 import Reporter, { ReporterEvents } from './reporter';
 
 export default class ReporterDefault extends Reporter {
@@ -12,7 +13,7 @@ export default class ReporterDefault extends Reporter {
                 if(!filename)
                     throw new Error('no filename specified');
 
-                filename = filename.replace(process.cwd() + '/', '');
+                filename = filename.replace(path.resolve(process.cwd(), '/'), '');
                 this.stdout.write(`${chalk.white(filename)}:\n`);
                 break;
             case ReporterEvents.EndFile:
