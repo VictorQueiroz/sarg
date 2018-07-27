@@ -72,10 +72,12 @@ export default class Sarg {
 
                     if(this.options.bail) {
                         failed = true;
-                        break;
                     }
                 }
                 this.reporter.endTest();
+
+                if(failed)
+                    break;
             }
 
             this.reporter.endFile();
