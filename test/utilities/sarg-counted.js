@@ -29,6 +29,10 @@ export default class SargCounted extends SargWatched {
         this.emit('fsChanged');
         super.onFileChanged();
     }
+    destroy() {
+        this.removeAllListeners();
+        super.destroy();
+    }
 }
 
 mixin(SargCounted, EventEmitter);
