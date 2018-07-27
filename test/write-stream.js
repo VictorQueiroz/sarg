@@ -15,7 +15,14 @@ export default class WriteStream extends stream.Writable {
             throw new Error(`Unexpected: "${chunk}"`);
         }
 
-        assert.deepEqual(this.items.shift(), Buffer.from(chunk, 'utf8'));
+        const buffer = Buffer.from(this.items.shift());
+
+        if(chunk instanceof RegExp) {
+            assert.ok(chunk.test(buffer.toString('utf8')), `${chunk} (RegExp) != "${buffer.toString('utf8')}"`);
+            return;
+        }
+
+        assert.deepEqual(buffer, Buffer.from(chunk, 'utf8'));
     }
     end() {}
     /**
