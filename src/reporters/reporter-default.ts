@@ -72,11 +72,11 @@ export default class ReporterDefault extends Reporter {
             this.stderr.write(this.reindent(this.failure.message, 2));
             this.stderr.write('\n');
         } else if(this.failure instanceof Error) {
-            process.stderr.write(
+            this.stderr.write(
                 this.reindent(this.failure.stack ? this.failure.stack : this.failure.message, 2)
             );
         } else {
-            process.stderr.write(this.reindent(JSON.stringify(this.failure), 2));
+            this.stderr.write(this.reindent(JSON.stringify(this.failure), 2));
         }
     }
 }
