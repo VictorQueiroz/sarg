@@ -67,8 +67,8 @@ export default abstract class Reporter {
     }
     public finished() {
         this.describe(ReporterEvents.Finished);
-        this.successesCount = -1;
-        this.failuresCount = -1;
+        this.successesCount = 0;
+        this.failuresCount = 0;
     }
     public endTest() {
         this.describe(ReporterEvents.EndTest);
