@@ -55,18 +55,25 @@ test('it should not run tests more than once if a test is already running', () =
         '--reporter', path.resolve(__dirname, 'reporter-silent.js')
     ], stdout, stderr).getOptions();
 
+
+    const test = new Test('infinity test', () => new Promise((resolve) => {
+        test.finish = resolve;
+    }));
     const sarg = new SargCounted(options);
-    sarg.addTest(new Test('infinity test', () => new Promise(() => {})), tmpFile);
+    sarg.addTest(test, tmpFile);
 
     sarg.run();
     assert.equal(sarg.runCount, 0);
 
     return new Promise((resolve) => {
-        sarg.on('fsChanged', () => {
-            assert.equal(sarg.runCount, 0);
+        sarg.once('finished', () => {
             sarg.destroy();
             fs.unlinkSync(tmpFile);
             resolve();
+        });
+        sarg.once('fsChanged', () => {
+            assert.equal(sarg.runCount, 0);
+            test.finish();
         });
         fs.createWriteStream(tmpFile).end('\n');
     });
