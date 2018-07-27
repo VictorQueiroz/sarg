@@ -1,4 +1,4 @@
-import { AssertionError, strict } from 'assert';
+import { AssertionError } from 'assert';
 import chalk from 'chalk';
 import Reporter, { ReporterEvents } from './reporter';
 
@@ -69,20 +69,8 @@ export default class ReporterDefault extends Reporter {
 
     private printReadableFailure() {
         if(this.failure instanceof AssertionError) {
-            let text: string;
-
-            if(!strict) {
-                const diff = require('difflet')({
-                    indent: 2
-                });
-
-                text = diff.compare(this.failure.expected, this.failure.actual);
-            } else {
-                text = this.failure.message;
-            }
-
-            process.stderr.write(this.reindent(text, 2));
-            process.stderr.write('\n');
+            this.stderr.write(this.reindent(this.failure.message, 2));
+            this.stderr.write('\n');
         } else if(this.failure instanceof Error) {
             process.stderr.write(
                 this.reindent(this.failure.stack ? this.failure.stack : this.failure.message, 2)
