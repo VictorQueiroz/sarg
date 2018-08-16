@@ -9,6 +9,8 @@ export interface SargOptions {
     ignore: string[];
     reporter: Reporter;
     reloadTimeout?: number;
+    teardownScript?: string;
+    setupScript?: string;
 }
 
 export default class Sarg {
@@ -18,6 +20,7 @@ export default class Sarg {
     private reporter: Reporter;
     private currentFile?: string;
     private running: boolean = false;
+    private setupPromise?: Promise<void>;
 
     constructor(private options: SargOptions) {
         this.reporter = options.reporter;
@@ -36,6 +39,13 @@ export default class Sarg {
     }
 
     public async run() {
+        if(this.options.setupScript) {
+            if(!this.setupPromise) {
+                this.setupPromise = require(this.options.setupScript)();
+            }
+            await this.setupPromise;
+        }
+
         if(this.running) {
             throw new Error('invalid run command');
         }
@@ -99,6 +109,8 @@ export default class Sarg {
             delete this.tests[test];
         }
         this.running = false;
+
+        this.onFinishTests();
     }
 
     public addTest(test: Test, filename: string) {
@@ -111,6 +123,12 @@ export default class Sarg {
     public destroy() {
         if(this.running) {
             throw new Error('Test runner can only be destroyed after tests are finished');
+        }
+    }
+
+    public onFinishTests() {
+        if(this.options.teardownScript) {
+            require(this.options.teardownScript)();
         }
     }
 }

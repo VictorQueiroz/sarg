@@ -76,6 +76,12 @@ export default class ArgumentsProcessor {
                 case '--reload-timeout':
                     options.reloadTimeout = parseInt(argv[++i], 10);
                     break;
+                case '--setup-script':
+                    options.setupScript = argv[++i];
+                    break;
+                case '--teardown-script':
+                    options.teardownScript = argv[++i];
+                    break;
                 case '-v':
                 case '--version':
                     this.stdout.write(`${require('../package.json').version}\n`);

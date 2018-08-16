@@ -1,13 +1,15 @@
 Usage:
   sarg [OPTION] [FILE]
 Help options:
-  -h, --help                     Show help options
+  -h, --help                      Show help options
 Application options:
-  --license                      Show license information and exit
-  -v, --version                  Show version information and exit
-  -b, --bail                     Stop tests when one of them fail
-  --reporter=<module/path>       Specify a custom reporter instead of the default one
-  -w, --watch=<directories>      List of directories to watch. Each directory needs to be separated by comma (i.e. --watch=src,test)
-  --ignore=<pattern>             Ignore test files using the input pattern
-  --reload-timeout=<seconds>     Time to wait before reloading tests. Must be used together with --watch option
-  --require=<path>               Execute NodeJS module before tests. Useful for executing transpiler registers like `ts-node/register` or `babel-register`
+  --license                       Show license information and exit
+  -v, --version                   Show version information and exit
+  -b, --bail                      Stop tests when one of them fail
+  --reporter=<module/path>        Specify a custom reporter instead of the default one
+  -w, --watch=<directories>       List of directories to watch. Each directory needs to be separated by comma (i.e. --watch=src,test)
+  --teardown-script=<file.js>     Script directioned to be executed when there is no more tests to execute. This option will be ignored when watch option is disabled
+  --setup-script=<file.js>        Setup script entrypoint, tests will only start after the return promise is not pending
+  --ignore=<pattern>              Ignore test files using the input pattern
+  --reload-timeout=<seconds>      Time to wait before reloading tests. Must be used together with --watch option
+  --require=<path>                Execute NodeJS module before tests. Useful for executing transpiler registers like `ts-node/register` or `babel-register`

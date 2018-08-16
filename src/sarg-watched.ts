@@ -36,4 +36,7 @@ export default class SargWatched extends Sarg {
         }
         this.runTestsTimer = setTimeout(() => this.run(), this.reloadTimeout);
     }
+
+    public onFinishTests() {
+    }
 }
