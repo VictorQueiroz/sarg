@@ -29,7 +29,7 @@ export default class ArgumentsProcessor {
             if(argv[i][0] == '-' && argv[i].indexOf('=') > -1) {
                 const slices = argv[i].split('=');
 
-                if(slices[1] == '"' || slices[1] == "'")
+                if(slices[1][0] == '"' || slices[1][0] == "'")
                     slices[1] = slices[1].substring(1, slices[1].length - 1);
 
                 argv.splice(i, 1, ...slices);
