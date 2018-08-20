@@ -34,6 +34,11 @@ export default class ReporterDefault extends Reporter {
                 this.stderr.write(chalk.red(`\u2715 failed to load ${filename}\n`));
                 this.printReadableFailure();
                 break;
+            case ReporterEvents.FailFilenameExecutor:
+            case ReporterEvents.FailEachExecutor:
+                this.stderr.write(chalk.red(`\u2715 each block execution failed ${filename}\n`));
+                this.printReadableFailure();
+                break;
             case ReporterEvents.SucceedTest:
             case ReporterEvents.FailTest:
                 if(!test)

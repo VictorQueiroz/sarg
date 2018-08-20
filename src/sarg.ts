@@ -13,9 +13,20 @@ export interface SargOptions {
     setupScript?: string;
 }
 
+export type AfterExecutor = () => void | Promise<void>;
+export type BeforeExecutor = () => void | Promise<void>;
+export type BeforeEachExecutor = () => void | Promise<void>;
+export type AfterEachExecutor = () => void | Promise<void>;
+
 export default class Sarg {
     private tests: {
-        [filename: string]: Test[]
+        [filename: string]: {
+            tests: Test[];
+            after: AfterExecutor[];
+            before: BeforeExecutor[];
+            beforeEach: BeforeEachExecutor[];
+            afterEach: AfterEachExecutor[];
+        };
     } = {};
     private reporter: Reporter;
     private currentFile?: string;
@@ -71,9 +82,26 @@ export default class Sarg {
         for(const filename of Object.keys(this.tests)) {
             this.reporter.readFile(filename);
 
-            for(const test of this.tests[filename]) {
-                this.reporter.startTest(test);
+            const record = this.getFilenameRecord(filename);
 
+            for(const before of record.before) {
+                try {
+                    await before();
+                } catch(reason) {
+                    this.reporter.failFilenameExecutor(reason);
+                }
+            }
+
+            for(const test of record.tests) {
+                for(const beforeEach of record.beforeEach) {
+                    try {
+                        await beforeEach();
+                    } catch(reason) {
+                        this.reporter.failEachExecutor(reason);
+                    }
+                }
+
+                this.reporter.startTest(test);
                 try {
                     await test.run();
                     this.reporter.succeedTest();
@@ -86,8 +114,24 @@ export default class Sarg {
                 }
                 this.reporter.endTest();
 
+                for(const afterEach of record.afterEach) {
+                    try {
+                        await afterEach();
+                    } catch(reason) {
+                        this.reporter.failEachExecutor(reason);
+                    }
+                }
+
                 if(failed)
                     break;
+            }
+
+            for(const after of record.after) {
+                try {
+                    await after();
+                } catch(reason) {
+                    this.reporter.failFilenameExecutor(reason);
+                }
             }
 
             this.reporter.endFile();
@@ -113,11 +157,30 @@ export default class Sarg {
         this.onFinishTests();
     }
 
-    public addTest(test: Test, filename: string) {
-        if(!this.tests.hasOwnProperty(filename))
-            this.tests[filename] = [];
+    public addAfter(executor: BeforeExecutor, filename: string) {
+        this.getFilenameRecord(filename).after.push(executor);
+    }
 
-        this.tests[filename].push(test);
+    public addBefore(executor: BeforeExecutor, filename: string) {
+        this.getFilenameRecord(filename).before.push(executor);
+    }
+
+    public addBeforeEach(executor: BeforeEachExecutor, filename: string) {
+        const record = this.getFilenameRecord(filename);
+
+        record.beforeEach.push(executor);
+    }
+
+    public addAfterEach(executor: AfterEachExecutor, filename: string) {
+        const record = this.getFilenameRecord(filename);
+
+        record.afterEach.push(executor);
+    }
+
+    public addTest(test: Test, filename: string) {
+        const record = this.getFilenameRecord(filename);
+
+        record.tests.push(test);
     }
 
     public destroy() {
@@ -130,5 +193,18 @@ export default class Sarg {
         if(this.options.teardownScript) {
             require(this.options.teardownScript)();
         }
+    }
+
+    private getFilenameRecord(filename: string) {
+        if(!this.tests.hasOwnProperty(filename)) {
+            this.tests[filename] = {
+                after: [],
+                afterEach: [],
+                before: [],
+                beforeEach: [],
+                tests: []
+            };
+        }
+        return this.tests[filename];
     }
 }

@@ -6,6 +6,31 @@ import ReporterTest from './reporter-test';
 import * as path from 'path';
 import WriteStream from './write-stream';
 import fs from 'fs';
+import { sync } from 'glob';
+
+test('it should throw for invalid reporter', async () => {
+    await assert.throws(() => {
+        new ArgumentsProcessor([
+            '',
+            '',
+            '--require', 'babel-register',
+            '--reporter', path.resolve(process.cwd(), 'test/invalid-reporter.js')
+        ]).getOptions();
+    }, new Error('Reporter must be a class based on `Reporter` class'));
+});
+
+test('it should have --setup-script option', () => {
+    assert.deepEqual(new ArgumentsProcessor([
+        '',
+        '',
+        '--setup-script', 'setup.js'
+    ]).getOptions(), {
+        files: [],
+        ignore: [],
+        reporter: new ReporterDefault(),
+        setupScript: 'setup.js'
+    });
+});
 
 test('it should have --bail, -b options', () => {
     assert.deepEqual(new ArgumentsProcessor(['', '', '--bail']).getOptions(), {
@@ -28,6 +53,47 @@ test('it should support --watch, -w options', () => {
     assert.deepEqual(new ArgumentsProcessor(['', '', '-w', 'src,test']).getOptions(), {
         reporter: new ReporterDefault(),
         watch: ['src', 'test'],
+        files: [],
+        ignore: []
+    });
+});
+
+test('it should support several definitions of watch option', () => {
+    assert.deepEqual(new ArgumentsProcessor([
+        '',
+        '',
+        '-w', 'src',
+        '-w', 'test'
+    ]).getOptions(), {
+        reporter: new ReporterDefault(),
+        watch: ['src', 'test'],
+        files: [],
+        ignore: []
+    });
+});
+
+test('it should support setting arguments with = and quotes', () => {
+    assert.deepEqual(new ArgumentsProcessor([
+        '',
+        '',
+        '-w="src"',
+        '--watch="test"'
+    ]).getOptions(), {
+        reporter: new ReporterDefault(),
+        watch: ['src', 'test'],
+        files: [],
+        ignore: []
+    });
+});
+
+test('it should support --teardown-script argument', () => {
+    assert.deepEqual(new ArgumentsProcessor([
+        '',
+        '',
+        '--teardown-script=close-tests.js'
+    ]).getOptions(), {
+        reporter: new ReporterDefault(),
+        teardownScript: 'close-tests.js',
         files: [],
         ignore: []
     });
@@ -117,17 +183,17 @@ test('it should support --help, -h', async () => {
 
 test('it should throw when receive invalid option', function() {
     for(const flag of ['--z', '-z']) {
-    const stdout = new WriteStream();
-    const stderr = new WriteStream();
-    const processor = new ArgumentsProcessor([
-        '',
-        '',
-        flag
-    ], stdout, stderr);
+        const stdout = new WriteStream();
+        const stderr = new WriteStream();
+        const processor = new ArgumentsProcessor([
+            '',
+            '',
+            flag
+        ], stdout, stderr);
 
-    assert.deepEqual(processor.getOptions(), undefined);
+        assert.deepEqual(processor.getOptions(), undefined);
 
-    stderr.expect(`Invalid option ${flag}\n`);
+        stderr.expect(`Invalid option ${flag}\n`);
     }
 });
 
@@ -141,6 +207,21 @@ test('it should --ignore files', () => {
     ]).getOptions(), {
         files: [path.resolve(__dirname, 'configure-enzyme.js')],
         ignore: [path.resolve(__dirname, 'babel-test.js')],
+        reporter: new ReporterDefault()
+    });
+});
+
+test('it sould resolve ignore pattern', () => {
+    assert.deepEqual(new ArgumentsProcessor([
+        '',
+        '',
+        '--ignore=test/utilities/**/*.js',
+        'test/**/*.js'
+    ]).getOptions(), {
+        files: sync(__dirname + '/**/*.js').filter(file => {
+            return sync(__dirname + '/utilities/**/*.js').indexOf(file) == -1;
+        }),
+        ignore: sync(__dirname + '/utilities/**/*.js'),
         reporter: new ReporterDefault()
     });
 });

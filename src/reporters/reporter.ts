@@ -18,7 +18,13 @@ export enum ReporterEvents {
     Finished,
     RequireFile,
     FailRequire,
-    SucceedRequire
+    SucceedRequire,
+    FailEachExecutor,
+    /**
+     * Describes a failure of a executor to be executed
+     * before or after all tests
+     */
+    FailFilenameExecutor
 }
 
 export default abstract class Reporter {
@@ -87,5 +93,15 @@ export default abstract class Reporter {
         this.describe(ReporterEvents.FailRequire);
         delete this.failure;
         delete this.filename;
+    }
+    public failEachExecutor(failure: any) {
+        this.failure = failure;
+        this.describe(ReporterEvents.FailEachExecutor);
+        delete this.failure;
+    }
+    public failFilenameExecutor(failure: any) {
+        this.failure = failure;
+        this.describe(ReporterEvents.FailFilenameExecutor);
+        delete this.failure;
     }
 }

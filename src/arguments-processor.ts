@@ -66,7 +66,7 @@ export default class ArgumentsProcessor {
                 }
                 case '--reporter': {
                     const Reporter = require(require.resolve(argv[++i]));
-                    if(!Reporter)
+                    if(!Reporter || !Reporter.default)
                         throw new Error('Reporter must be a class based on `Reporter` class');
                     options.reporter = Reporter.default ?
                                         new Reporter.default(this.stdout, this.stderr) :
@@ -119,6 +119,8 @@ export default class ArgumentsProcessor {
                     options.files.splice(i, 1);
                 }
             }
+
+            options.ignore = files;
         }
 
         return options;
