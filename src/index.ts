@@ -1,5 +1,5 @@
 import ArgumentsProcessor from './arguments-processor';
-import Sarg from './sarg';
+import Sarg, { BeforeEachExecutor, AfterEachExecutor, AfterExecutor, BeforeExecutor } from './sarg';
 import SargWatched from './sarg-watched';
 import Test, { TestExecutor } from './test';
 
@@ -25,15 +25,44 @@ if(options && !options.watch) {
     });
 }
 
+function getSarg() {
+    if(!sarg)
+        throw new Error('No sarg instance found');
+
+    return sarg;
+}
+
+function getFilename() {
+    const filename = getSarg().getFilename();
+    if(!filename) {
+        throw new Error('No file is being processed');
+    }
+    return filename;
+}
+
 export const sarg = instance;
 export function test(label: string, executor: TestExecutor) {
-    if(!sarg)
-        throw new Error('sarg is not running');
-
-    const filename = sarg.getFilename();
-
-    if(!filename)
-        throw new Error('no file specified');
-
-    sarg.addTest(new Test(label, executor), filename);
+    getSarg().addTest(new Test(label, executor), getFilename());
 }
+
+export function beforeEach(executor: BeforeEachExecutor) {
+    getSarg().addBeforeEach(executor, getFilename());
+}
+
+export function afterEach(executor: AfterEachExecutor) {
+    getSarg().addAfterEach(executor, getFilename());
+}
+
+export function after(executor: AfterExecutor) {
+    getSarg().addAfter(executor, getFilename());
+}
+
+export function before(executor: BeforeExecutor) {
+    getSarg().addBefore(executor, getFilename());
+}
+
+if(instance && !instance.isRunning()) {
+    instance.run();
+}
+
+export default instance;
