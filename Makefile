@@ -1,42 +1,17 @@
-SARG_EXEC = ./bin/sarg
-
 release:
 	rm -frv lib && \
 	mkdir -p bin && \
 	./node_modules/.bin/tsc --build src/tsconfig.json && \
-	chmod +x $(SARG_EXEC) && \
+	chmod +x lib/index.js && \
 	node -e 'console.log("---\nnew build for version %s generated", require("chalk").blue(require("./package.json").version))'
 
-test: release
-	TS_NODE_PROJECT=$(PWD)/test $(SARG_EXEC) \
-		--bail \
-		--require $(PWD)/test/configure-enzyme.js \
-		--require ts-node/register \
-		--require babel-register \
-		--ignore ./test/ignore-option/ignore.js \
-		--ignore ./test/failed-comparison.js \
-		"./test/**/*.js"
+test:
+	scripts/run-unit-tests.sh
 
 tdd:
-	TS_NODE_PROJECT=$(PWD)/test $(SARG_EXEC) \
-		--bail \
-		--watch test,src \
-		--require $(PWD)/test/configure-enzyme.js \
-		--require ts-node/register \
-		--require babel-register \
-		--ignore ./test/ignore-option/ignore.js \
-		--ignore ./test/failed-comparison.js \
-		"./test/**/*.js"
+	scripts/run-unit-tests.sh -w src,test
 
 coverage:
-	TS_NODE_PROJECT=$(PWD)/test ./node_modules/.bin/nyc $(SARG_EXEC) \
-		--bail \
-		--require $(PWD)/test/configure-enzyme.js \
-		--require ts-node/register \
-		--require babel-register \
-		--require source-map-support/register \
-		--ignore ./test/ignore-option/ignore.js \
-		--ignore ./test/failed-comparison.js \
-		"./test/**/*.js"
+	npx nyc ./scripts/run-unit-tests.sh
 
-.PHONY: release test
+.PHONY: release test coverage
