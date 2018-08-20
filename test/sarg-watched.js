@@ -1,11 +1,11 @@
-import { test } from '../lib';
-import ArgumentsProcessor from '../lib/arguments-processor';
+import { test } from '../src';
+import ArgumentsProcessor from '../src/arguments-processor';
 import WriteStream from './write-stream';
 import * as fs from 'fs';
 import * as path from 'path';
 import { strict as assert } from 'assert';
 import SargCounted from './utilities/sarg-counted';
-import Test from '../lib/test';
+import Test from '../src/test';
 
 test('it should execute tests again just once no matter how many times files are changed', async () => {
     const tmpFile = '/tmp/sarg-file.js';
@@ -83,9 +83,9 @@ test('it should watch for changes in files', async () => {
     const stdout = new WriteStream();
     const stderr = new WriteStream();
 
-    const tmpFile = '/tmp/sarg-watched-file';
+    const tmpFile = '/tmp/sarg-file-0';
 
-    fs.createWriteStream(tmpFile).end('\n');
+    fs.closeSync(fs.openSync(tmpFile, 'w+'));
 
     const options = new ArgumentsProcessor([
         '',

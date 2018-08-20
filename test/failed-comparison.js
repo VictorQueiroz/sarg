@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { test } = require('../lib');
+const { test } = require('../src');
 
 test('should not be equal', function() {
     assert.deepEqual({a: 1}, {b: 2});

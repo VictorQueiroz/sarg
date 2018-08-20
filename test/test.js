@@ -1,5 +1,5 @@
-import { test } from '../lib';
-import Test from '../lib/test';
+import { test } from '../src';
+import Test from '../src/test';
 import { strict as assert } from 'assert';
 
 test('it should throw when executor fails', async function() {

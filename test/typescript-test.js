@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const React = require('react');
 const Topbar = require('./Topbar').default;
 const { shallow } = require('enzyme');
-const { test } = require('../lib');
+const { test } = require('../src');
 
 test('should render topbar', function() {
     const wrapper = shallow(

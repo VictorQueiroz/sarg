@@ -1,7 +1,7 @@
-import { strict as assert, rejects } from 'assert';
-import { test } from '../lib';
-import ArgumentsProcessor from '../lib/arguments-processor';
-import ReporterDefault from '../lib/reporters/reporter-default';
+import { strict as assert } from 'assert';
+import { test } from '../src';
+import ArgumentsProcessor from '../src/arguments-processor';
+import ReporterDefault from '../src/reporters/reporter-default';
 import ReporterTest from './reporter-test';
 import * as path from 'path';
 import WriteStream from './write-stream';

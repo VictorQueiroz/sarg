@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import SargWatched from '../../lib/sarg-watched';
+import SargWatched from '../../src/sarg-watched';
 
 function mixin(target, source) {
     target = target.prototype; source = source.prototype;

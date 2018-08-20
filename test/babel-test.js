@@ -3,7 +3,7 @@ import glob from 'glob';
 import path from 'path';
 import reducer from './reducers/counter';
 import * as actions from './reducers/counter';
-import { test } from '../lib';
+import { test } from '../src';
 
 test('it should work while importing modules', () => {
     assert.deepEqual(glob.sync(__dirname + '/../*.md'), [

@@ -49,5 +49,8 @@
     "source-map-support": "^0.5.6",
     "ts-node": "^3.3.0",
     "typescript": "^3.1.0-dev.20180721"
+  },
+  "nyc": {
+    "extension": [".ts", ".js"]
   }
 }

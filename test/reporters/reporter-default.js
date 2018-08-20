@@ -1,7 +1,7 @@
-import { test } from '../../lib';
-import ReporterDefault from '../../lib/reporters/reporter-default';
+import { test } from '../../src';
+import ReporterDefault from '../../src/reporters/reporter-default';
 import WriteStream from '../write-stream';
-import Test from '../../lib/test';
+import Test from '../../src/test';
 import { strict as assert } from 'assert';
 import chalk from 'chalk';
 
