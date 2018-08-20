@@ -1,7 +1,3 @@
 #!/usr/bin/env node
 
-const { sarg } = require('../lib');
-
-if(sarg) {
-    sarg.run();
-}
+module.exports = require('../lib');
