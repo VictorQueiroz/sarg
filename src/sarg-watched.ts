@@ -11,15 +11,13 @@ export default class SargWatched extends Sarg {
     private runTestsTimer?: NodeJS.Timer;
     private reloadTimeout: number;
 
-    constructor(options: SargWatchedOptions) {
-        super(options);
+    constructor(private watchOptions: SargWatchedOptions) {
+        super(watchOptions);
 
-        this.onFileChanged = this.onFileChanged.bind(this);
-
-        this.watcher = chokidar.watch(options.watch);
+        this.watcher = chokidar.watch(this.watchOptions.watch);
         this.watcher.on('change', this.onFileChanged);
 
-        this.reloadTimeout = options.reloadTimeout;
+        this.reloadTimeout = this.watchOptions.reloadTimeout;
     }
 
     public destroy() {
