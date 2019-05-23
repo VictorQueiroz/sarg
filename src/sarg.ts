@@ -172,6 +172,19 @@ export default class Sarg {
         record.tests.push(test);
     }
 
+    public isTestFile(filename: string) {
+        if(this.tests.has(filename)) {
+            return true;
+        }
+        return false;
+    }
+
+    public invalidateTest(filename: string) {
+        if(!this.tests.delete(filename)) {
+            throw new Error(`Tried to invalidate cache of unexistent file: ${filename}`);
+        }
+    }
+
     public destroy() {
         if(this.running) {
             throw new Error('Test runner can only be destroyed after tests are finished');
