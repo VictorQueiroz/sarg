@@ -18,16 +18,16 @@ export type BeforeExecutor = () => void | Promise<void>;
 export type BeforeEachExecutor = () => void | Promise<void>;
 export type AfterEachExecutor = () => void | Promise<void>;
 
+export interface ITestSuite {
+    tests: Test[];
+    after: AfterExecutor[];
+    before: BeforeExecutor[];
+    beforeEach: BeforeEachExecutor[];
+    afterEach: AfterEachExecutor[];
+}
+
 export default class Sarg {
-    private tests: {
-        [filename: string]: {
-            tests: Test[];
-            after: AfterExecutor[];
-            before: BeforeExecutor[];
-            beforeEach: BeforeEachExecutor[];
-            afterEach: AfterEachExecutor[];
-        };
-    } = {};
+    private tests = new Map<string, ITestSuite>();
     private reporter: Reporter;
     private currentFile?: string;
     private running: boolean = false;
