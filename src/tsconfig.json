@@ -3,7 +3,7 @@
     "./**/*.ts",
   ],
   "compilerOptions": {
-    "target": "es3",
+    "target": "es5",
     "module": "commonjs",
     "lib": ["esnext"],
     "outDir": "../lib",
@@ -20,7 +20,7 @@
     "noImplicitReturns": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
+    "emitDecoratorMetadata": false,
     "noFallthroughCasesInSwitch": true,
     "strictPropertyInitialization": true,
     "noImplicitThis": true,
