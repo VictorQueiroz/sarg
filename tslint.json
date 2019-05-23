@@ -11,6 +11,7 @@
         "no-angle-bracket-type-assertion": false,
         "whitespace": false,
         "triple-equals": false,
+        "member-access": true,
         "interface-name": false,
         "curly": false
     },
