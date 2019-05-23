@@ -62,7 +62,6 @@ export default class Sarg {
         }
 
         this.running = true;
-        const initialCache = Object.keys(require.cache);
 
         for(const file of this.options.files) {
             this.reporter.requireFile(file);
@@ -142,16 +141,6 @@ export default class Sarg {
 
         this.reporter.finished();
 
-        for(const key of Object.keys(require.cache)) {
-            if(key.indexOf('node_modules') != -1 || initialCache.indexOf(key) != -1)
-                continue;
-
-            delete require.cache[key];
-        }
-
-        for(const test of Object.keys(this.tests)) {
-            delete this.tests[test];
-        }
         this.running = false;
 
         this.onFinishTests();
