@@ -6,6 +6,7 @@
     "allowJs": true,
     "checkJs": false,
     "jsx": "react",
+    "experimentalDecorators": true,
     "strict": true,
     "moduleResolution": "node"
   }
