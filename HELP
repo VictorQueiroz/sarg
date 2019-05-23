@@ -1,5 +1,5 @@
 Usage:
-  sarg [OPTION] [FILE]
+  sarg [OPTION] [FILE] [PATTERN]
 Help options:
   -h, --help                      Show help options
 Application options:
