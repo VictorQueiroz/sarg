@@ -49,6 +49,7 @@ export default class Sarg {
         return this.currentFile;
     }
 
+    @boundMethod
     public async run() {
         if(this.options.setupScript) {
             if(!this.setupPromise) {
