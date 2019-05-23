@@ -10,7 +10,7 @@ export interface SargOptions {
     reporter: Reporter;
     reloadTimeout?: number;
     teardownScript?: string;
-    setupScript?: string;
+    setupScript?: () => Promise<void>;
 }
 
 export type AfterExecutor = () => void | Promise<void>;
@@ -52,7 +52,7 @@ export default class Sarg {
     public async run() {
         if(this.options.setupScript) {
             if(!this.setupPromise) {
-                this.setupPromise = require(this.options.setupScript)();
+                this.setupPromise = this.options.setupScript();
             }
             await this.setupPromise;
         }

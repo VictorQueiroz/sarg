@@ -77,7 +77,7 @@ export default class ArgumentsProcessor {
                     options.reloadTimeout = parseInt(argv[++i], 10);
                     break;
                 case '--setup-script':
-                    options.setupScript = argv[++i];
+                    options.setupScript = require(argv[++i]);
                     break;
                 case '--teardown-script':
                     options.teardownScript = argv[++i];
