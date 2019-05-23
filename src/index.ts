@@ -1,5 +1,5 @@
 import ArgumentsProcessor from './arguments-processor';
-import Sarg, { BeforeEachExecutor, AfterEachExecutor, AfterExecutor, BeforeExecutor } from './sarg';
+import Sarg, { AfterEachExecutor, AfterExecutor, BeforeEachExecutor, BeforeExecutor } from './sarg';
 import SargWatched from './sarg-watched';
 import Test, { TestExecutor } from './test';
 
