@@ -1,1 +1,7 @@
 test/
+src/
+.history/
+coverage/
+.nyc_output/
+tslint.json
+Makefile
