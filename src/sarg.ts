@@ -1,3 +1,4 @@
+import { boundMethod } from 'autobind-decorator';
 import * as path from 'path';
 import Reporter from './reporters/reporter';
 import Test from './test';
