@@ -80,10 +80,8 @@ export default class Sarg {
 
         let failed: boolean = false;
 
-        for(const filename of Object.keys(this.tests)) {
+        for(const [filename, record] of this.tests) {
             this.reporter.readFile(filename);
-
-            const record = this.getFilenameRecord(filename);
 
             for(const before of record.before) {
                 try {
@@ -200,15 +198,17 @@ export default class Sarg {
     }
 
     private getFilenameRecord(filename: string) {
-        if(!this.tests.hasOwnProperty(filename)) {
-            this.tests[filename] = {
+        let record = this.tests.get(filename);
+        if(!record) {
+            record = {
                 after: [],
                 afterEach: [],
                 before: [],
                 beforeEach: [],
                 tests: []
             };
+            this.tests.set(filename, record);
         }
-        return this.tests[filename];
+        return record;
     }
 }
