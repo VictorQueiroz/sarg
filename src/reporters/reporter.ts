@@ -45,7 +45,10 @@ export default abstract class Reporter {
      */
     public failure?: any;
 
-    constructor(public stdout: NodeJS.WriteStream, public stderr: NodeJS.WriteStream) {}
+    constructor(
+        public stdout: NodeJS.WriteStream,
+        public stderr: NodeJS.WriteStream
+    ) {}
     /* tslint:disable member-access */
     abstract describe(event: ReporterEvents): void;
     /* tslint:enable member-access */
