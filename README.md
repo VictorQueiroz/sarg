@@ -1,6 +1,6 @@
 # sarg
 
-Simple unit testing runner that will travel through your files letting you know what happened. Simple fast and with TypeScript definitions included!
+Simple unit testing runner that will travel through your files letting you know what happened. Simple, fast and with TypeScript definitions included!
 
 ## Installation
 
@@ -17,7 +17,7 @@ npm install --save-dev sarg
 If you want detailed information about what each argument does, you can hit:
 
 ```
-./node_modules/.bin/sarg --help
+npx sarg --help
 ```
 
 Create your `test.js` file
@@ -28,34 +28,34 @@ const reducer = require('./src/reducers/counter');
 const { test } = require('sarg');
 
 test('it should return initial state', function() {
-	assert.equal(reducer(undefined, {}), 0);
+    assert.equal(reducer(undefined, {}), 0);
 });
 
 test('it should increase counter', function() {
-	assert.equal(reducer(0, reducer.increaseCounter()), 1);
+    assert.equal(reducer(0, reducer.increaseCounter()), 1);
 });
 
 test('it should decrease counter', function() {
-	assert.equal(reducer(1, reducer.decreaseCounter()), 0);
+    assert.equal(reducer(1, reducer.decreaseCounter()), 0);
 });
 
 test('it should not go lower than 0', function() {
-	assert.equal(reducer(0, reducer.decreaseCounter()), 0);
+    assert.equal(reducer(0, reducer.decreaseCounter()), 0);
 });
 ```
 
 Test it
 
-```
-./node_modules/.bin/sarg test.js
+```sh
+npx sarg --watch test test.js
 ```
 
 ## Test-Driven Development
 
 The `-w` command will watch changes in files for you.
 
-```
-./node_modules/.bin/sarg -w test,src --ignore test/client-test.js "test/**/*.{js,tsx?}"
+```sh
+npx sarg -w test --ignore test/client-test.js "test/**/*.{js,tsx?}"
 ```
 
 ## Usage with transpilers
@@ -65,19 +65,20 @@ You can use `--require` argument to load code that needs to be transpiled. It is
 It works well with TypeScript and Babel register, you're free to use it together with no problem.
 
 ### Babel
-```
-./node_modules/.bin/sarg \
-	--require babel-register \
-	-w test,src -r test
+
+```sh
+npx sarg \
+    --require @babel/register \
+    -w src/tests/**/*.* test/**/*.{js,ts,tsx,jsx}
 ```
 
 ### TypeScript
 
-```
-./node_modules/.bin/sarg \
-	--require ts-node/register
-	-w test,src
-	-r test
+```sh
+npx sarg \
+    --require ts-node/register
+    -w test
+    test/**/*.{js,ts,tsx,jsx}
 ```
 
 ## Reporters
