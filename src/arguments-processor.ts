@@ -50,18 +50,13 @@ export default class ArgumentsProcessor {
                     break;
                 case '-w':
                 case '--watch': {
-                    let value: string | string[] = argv[++i];
-
-                    if(value.indexOf(',') != -1)
-                        value = value.split(',');
-                    else
-                        value = [value];
+                    const value = argv[++i].split(',');
 
                     if(!options.watch) {
                         options.watch = value;
                         break;
                     }
-                    options.watch.push(...value);
+                    options.watch = options.watch.concat(value);
                     break;
                 }
                 case '--reporter': {
