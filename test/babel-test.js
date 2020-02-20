@@ -3,7 +3,10 @@ import * as glob from 'glob';
 import * as path from 'path';
 import reducer from './reducers/counter';
 import * as actions from './reducers/counter';
-import { test } from '../src';
+import Suite from '../src/suite';
+
+const suite = new Suite();
+const {test} = suite;
 
 test('it should work while importing modules', () => {
     assert.deepEqual(glob.sync(__dirname + '/../*.md'), [
@@ -32,3 +35,5 @@ test('it should decrease counter', () => {
 test('it should not go lower than 0', () => {
     assert.equal(reducer(0, actions.decreaseCounter()), 0);
 });
+
+export default suite;

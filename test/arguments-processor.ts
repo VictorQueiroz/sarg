@@ -2,11 +2,14 @@ import { strict as assert } from 'assert';
 import * as fs from 'fs';
 import { sync } from 'glob';
 import * as path from 'path';
-import { test } from '../src';
 import ArgumentsProcessor from '../src/arguments-processor';
 import ReporterDefault from '../src/reporters/reporter-default';
 import ReporterTest from './reporter-test';
 import WriteStream from './write-stream';
+import Suite from '../src/suite';
+
+const suite = new Suite();
+const {test} = suite;
 
 test('it should throw for invalid reporter', async () => {
     const stdout = new WriteStream();
@@ -308,3 +311,5 @@ test('it sould resolve ignore pattern', () => {
         reporter: new ReporterDefault(stdout, stderr)
     });
 });
+
+export default suite;

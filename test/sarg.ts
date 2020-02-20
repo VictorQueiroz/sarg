@@ -1,9 +1,11 @@
-import * as path from 'path';
 import { spy } from 'sinon';
-import { test } from "../src";
 import ReporterDefault from '../src/reporters/reporter-default';
 import Sarg from "../src/sarg";
 import WriteStream from './write-stream';
+import Suite from '../src/suite';
+
+const suite = new Suite();
+const {test} = suite;
 
 test('it should run setup script', async () => {
     const stdout = new WriteStream();
@@ -17,3 +19,5 @@ test('it should run setup script', async () => {
     });
     await sarg.run();
 });
+
+export default suite;

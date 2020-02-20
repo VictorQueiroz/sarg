@@ -10,24 +10,26 @@ export default class WriteStream extends Duplex {
         this.items.push(chunk);
         callback();
     }
-    public expect(chunk: string | RegExp) {
+    public expect(...chunks: Array<string | RegExp>) {
         if(this.items.length == 0) {
-            throw new Error(`Unexpected: "${chunk}"`);
+            throw new Error(`Unexpected: "(${chunks.join(' / ')})"`);
         }
 
         const item = this.items.shift();
         if(!item) {
-            throw new Error(`Expected ${chunk} but got undefined instead`);
+            throw new Error(`Expected (${chunks.join(' / ')}) but got undefined instead`);
         }
 
         const buffer = Buffer.from(item);
 
-        if(chunk instanceof RegExp) {
-            assert.ok(chunk.test(buffer.toString('utf8')), `${chunk} (RegExp) != "${buffer.toString('utf8')}"`);
-            return;
-        }
+        for(const chunk of chunks) {
+            if(chunk instanceof RegExp) {
+                assert.ok(chunk.test(buffer.toString('utf8')), `${chunk} (RegExp) != "${buffer.toString('utf8')}"`);
+                return;
+            }
 
-        assert.deepEqual(buffer, Buffer.from(chunk, 'utf8'));
+            assert.deepEqual(buffer, Buffer.from(chunk, 'utf8'));
+        }
     }
     public end() {
         return;

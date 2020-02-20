@@ -43,7 +43,12 @@ export default abstract class Reporter {
      * attached to this reporter as soon as the runner receive
      * a rejection from a test
      */
-    public failure?: any;
+    public failure?: {
+        expected?: any;
+        actual?: any;
+        stack?: string;
+        message?: string;
+    };
 
     constructor(
         public stdout: NodeJS.WriteStream,
@@ -107,4 +112,8 @@ export default abstract class Reporter {
         this.describe(ReporterEvents.FailFilenameExecutor);
         delete this.failure;
     }
+    /**
+     * Print warning on stderr
+     */
+    public abstract warn(message: string): void;
 }

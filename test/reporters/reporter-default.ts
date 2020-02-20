@@ -1,6 +1,42 @@
-import { test } from '../../src';
 import ReporterDefault from '../../src/reporters/reporter-default';
 import WriteStream from '../write-stream';
+import Test from '../../src/test';
+import {expect} from 'chai';
+import Suite from '../../src/suite';
+
+const suite = new Suite();
+const {test} = suite;
+
+test('it should show cool diff for assertion mismatches', async () => {
+    const stdout = new WriteStream();
+    const stderr = new WriteStream();
+    const test = new Test('test 1', () => {
+        expect({
+            users: [{
+                name: 'Victor'
+            }]
+        }).to.be.deep.equal({
+            users: []
+        });
+    });
+    const reporter = new ReporterDefault(stdout, stderr);
+    reporter.readFile('test.js');
+    reporter.startTest(test);
+    try {
+        await test.run();
+    } catch(reason) {
+        reporter.failTest(reason);
+    }
+    stderr.expect(/test 1/);
+    stderr.expect(/\n/);
+    stderr.expect(/\+ Expected/);
+    stderr.expect(/\//);
+    stderr.expect(/\- Actual/);
+    stderr.expect(/\n\n/);
+    stderr.expect(/\{\n/);
+    stderr.expect(/\"users\": \[\]/);
+    stderr.expect(/Victor/, /name/, /\"users\"/);
+});
 
 // test('it should report failures', async () => {
 //     const stdout = new WriteStream();
@@ -82,3 +118,5 @@ test('it should print native Error instance', () => {
     stderr.expect(/failed to load test\.js/);
     stderr.expect(/can\'t load it/);
 });
+
+export default suite;

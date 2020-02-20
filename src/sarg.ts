@@ -2,6 +2,8 @@ import { boundMethod } from 'autobind-decorator';
 import * as path from 'path';
 import Reporter from './reporters/reporter';
 import Test from './test';
+import TestSuite from './suite';
+import Suite from './suite';
 
 export interface SargOptions {
     watch?: string[];
@@ -28,7 +30,7 @@ export interface ITestSuite {
 }
 
 export default class Sarg {
-    private tests = new Map<string, ITestSuite>();
+    private testSuites = new Map<string, TestSuite>();
     private reporter: Reporter;
     private currentFile?: string;
     private running: boolean = false;
@@ -70,7 +72,13 @@ export default class Sarg {
             this.currentFile = file;
             const target = path.resolve(process.cwd(), file);
             try {
-                require(target);
+                let suite = require(target);
+                if(suite && (suite.default instanceof Suite || suite instanceof Suite)) {
+                    if(suite.default) {
+                        suite = suite.default;
+                    }
+                    this.testSuites.set(file, suite);
+                }
                 this.reporter.succeedRequire();
             } catch(reason) {
                 this.reporter.failRequire(reason);
@@ -80,10 +88,10 @@ export default class Sarg {
 
         let failed: boolean = false;
 
-        for(const [filename, record] of this.tests) {
+        for(const [filename, record] of this.testSuites) {
             this.reporter.readFile(filename);
 
-            for(const before of record.before) {
+            for(const before of record.beforeSet) {
                 try {
                     await before();
                 } catch(reason) {
@@ -91,8 +99,8 @@ export default class Sarg {
                 }
             }
 
-            for(const test of record.tests) {
-                for(const beforeEach of record.beforeEach) {
+            for(const test of record.tests.values()) {
+                for(const beforeEach of record.beforeEachSet) {
                     try {
                         await beforeEach();
                     } catch(reason) {
@@ -113,7 +121,7 @@ export default class Sarg {
                 }
                 this.reporter.endTest();
 
-                for(const afterEach of record.afterEach) {
+                for(const afterEach of record.afterEachSet) {
                     try {
                         await afterEach();
                     } catch(reason) {
@@ -125,7 +133,7 @@ export default class Sarg {
                     break;
             }
 
-            for(const after of record.after) {
+            for(const after of record.afterSet) {
                 try {
                     await after();
                 } catch(reason) {
@@ -147,40 +155,40 @@ export default class Sarg {
     }
 
     public addAfter(executor: BeforeExecutor, filename: string) {
-        this.getFilenameRecord(filename).after.push(executor);
+        this.getFilenameRecord(filename).after(executor);
     }
 
     public addBefore(executor: BeforeExecutor, filename: string) {
-        this.getFilenameRecord(filename).before.push(executor);
+        this.getFilenameRecord(filename).before(executor);
     }
 
     public addBeforeEach(executor: BeforeEachExecutor, filename: string) {
         const record = this.getFilenameRecord(filename);
 
-        record.beforeEach.push(executor);
+        record.beforeEach(executor);
     }
 
     public addAfterEach(executor: AfterEachExecutor, filename: string) {
         const record = this.getFilenameRecord(filename);
 
-        record.afterEach.push(executor);
+        record.afterEach(executor);
     }
 
     public addTest(test: Test, filename: string) {
         const record = this.getFilenameRecord(filename);
 
-        record.tests.push(test);
+        record.tests.set(test.name(), test);
     }
 
     public isTestFile(filename: string) {
-        if(this.tests.has(filename)) {
+        if(this.testSuites.has(filename)) {
             return true;
         }
         return false;
     }
 
     public invalidateTest(filename: string) {
-        if(!this.tests.delete(filename)) {
+        if(!this.testSuites.delete(filename)) {
             throw new Error(`Tried to invalidate cache of unexistent file: ${filename}`);
         }
     }
@@ -198,16 +206,10 @@ export default class Sarg {
     }
 
     private getFilenameRecord(filename: string) {
-        let record = this.tests.get(filename);
+        let record = this.testSuites.get(filename);
         if(!record) {
-            record = {
-                after: [],
-                afterEach: [],
-                before: [],
-                beforeEach: [],
-                tests: []
-            };
-            this.tests.set(filename, record);
+            record = new Suite();
+            this.testSuites.set(filename, record);
         }
         return record;
     }
