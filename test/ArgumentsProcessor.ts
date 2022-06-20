@@ -1,12 +1,12 @@
-import { strict as assert } from 'assert';
-import * as fs from 'fs';
-import { sync } from 'glob';
-import * as path from 'path';
-import ArgumentsProcessor from '../src/arguments-processor';
-import ReporterDefault from '../src/reporters/reporter-default';
+import assert from 'assert';
+import fs from 'fs';
+import glob from 'glob';
+import path from 'path';
+import ArgumentsProcessor from '../src/ArgumentsProcessor';
+import ReporterDefault from '../src/reporters/ReporterDefault';
 import ReporterTest from './reporter-test';
 import WriteStream from './write-stream';
-import Suite from '../src/suite';
+import Suite from '../src/Suite';
 
 const suite = new Suite();
 const {test} = suite;
@@ -14,13 +14,13 @@ const {test} = suite;
 test('it should throw for invalid reporter', async () => {
     const stdout = new WriteStream();
     const stderr = new WriteStream();
-    await assert.throws(() => {
+    assert.strict.throws(() => {
         new ArgumentsProcessor([
             '',
             '',
             '--require', '@babel/register',
             '--reporter', path.resolve(process.cwd(), 'test/invalid-reporter.ts')
-        ], stdout, stderr).getOptions();
+        ], stdout, stderr, __dirname).getOptions();
     }, new Error('Reporter must be a class based on `Reporter` class'));
 });
 
@@ -31,7 +31,7 @@ test('it should have --setup-script option', () => {
         '',
         '',
         '--setup-script', path.resolve(__dirname, 'sarg-setup-script.ts')
-    ], stdout, stderr).getOptions();
+    ], stdout, stderr, __dirname).getOptions();
     if(!options) {
         throw new Error('Invalid options');
     }
@@ -49,7 +49,8 @@ test('it should have --bail, -b options', () => {
     const options = new ArgumentsProcessor(
         ['', '', '--bail'],
         stdout,
-        stderr
+        stderr,
+        __dirname
     ).getOptions();
     if(!options) {
         throw new Error('Invalid options variable');
@@ -68,13 +69,13 @@ test('it should load files from glob', () => {
     const options = new ArgumentsProcessor([
         '',
         '',
-        path.resolve(__dirname, 'arguments-*.ts')
-    ], stdout, stderr).getOptions();
+        path.resolve(__dirname, 'Arguments*.ts')
+    ], stdout, stderr, __dirname).getOptions();
     if(!options) {
         throw new Error('Invalid options result');
     }
     assert.deepEqual(options, {
-        files: [path.resolve(__dirname, 'arguments-processor.ts')],
+        files: [path.resolve(__dirname, 'ArgumentsProcessor.ts')],
         ignore: [],
         reporter: new ReporterDefault(stdout, stderr)
     });
@@ -89,7 +90,8 @@ test('it should detect directories/pattern separated by comma', () => {
             '-w', 'a,b,c/**/*/d.js'
         ],
         stdout,
-        stderr
+        stderr,
+        __dirname
     ).getOptions();
     if(!options) {
         throw new Error('Invalid options result');
@@ -112,7 +114,8 @@ test('it should support --watch, -w options', () => {
             '-w', 'test'
         ],
         stdout,
-        stderr
+        stderr,
+        __dirname
     ).getOptions();
     if(!options) {
         throw new Error('Invalid options result');
@@ -133,7 +136,7 @@ test('it should support several definitions of watch option', () => {
         '',
         '-w', 'src',
         '-w', 'test'
-    ], stdout, stderr).getOptions();
+    ], stdout, stderr, __dirname).getOptions();
     assert.deepEqual(options, {
         files: [],
         ignore: [],
@@ -150,7 +153,7 @@ test('it should support setting arguments with = and quotes', () => {
         '',
         '-w="src"',
         '--watch="test"'
-    ], stdout, stderr).getOptions(), {
+    ], stdout, stderr, __dirname).getOptions(), {
         files: [],
         ignore: [],
         reporter: new ReporterDefault(stdout, stderr),
@@ -161,15 +164,16 @@ test('it should support setting arguments with = and quotes', () => {
 test('it should support --teardown-script argument', () => {
     const stdout = new WriteStream();
     const stderr = new WriteStream();
+    const teardownScript = path.resolve(__dirname,'close-tests.js');
     assert.deepEqual(new ArgumentsProcessor([
         '',
         '',
-        '--teardown-script=close-tests.js'
-    ], stdout, stderr).getOptions(), {
+        `--teardown-script=${teardownScript}`
+    ], stdout, stderr, __dirname).getOptions(), {
         files: [],
         ignore: [],
         reporter: new ReporterDefault(stdout, stderr),
-        teardownScript: 'close-tests.js'
+        teardownScript
     });
 });
 
@@ -183,7 +187,7 @@ test('it should support --reload-timeout option', () => {
         '-w', 'test',
         '--reload-timeout',
         '100'
-    ], stdout, stderr).getOptions(), {
+    ], stdout, stderr, __dirname).getOptions(), {
         files: [],
         ignore: [],
         reloadTimeout: 100,
@@ -200,10 +204,10 @@ test('it should support --reporter option', () => {
         '',
         '--reporter',
         path.resolve(__dirname, './reporter-test.ts')
-    ], stdout, stderr).getOptions(), {
+    ], stdout, stderr, __dirname).getOptions(), {
         files: [],
         ignore: [],
-        reporter: new ReporterTest(stdout, stderr),
+        reporter: new ReporterTest(stdout,stderr)
     });
 });
 
@@ -215,7 +219,7 @@ test('it should support --version, -v options', () => {
             '',
             '',
             flag
-        ], stdout, stderr).getOptions(), undefined);
+        ], stdout, stderr, __dirname).getOptions(), undefined);
 
         stdout.expect(`${require('../package.json').version}\n`);
     }
@@ -231,7 +235,8 @@ test('it should support --license option', async () => {
             '--license'
         ],
         stdout,
-        stderr
+        stderr,
+        __dirname
     );
 
     stdout.prepare();
@@ -251,7 +256,7 @@ test('it should support --help, -h', async () => {
             '',
             '',
             flag
-        ], stdout, stderr);
+        ], stdout, stderr, __dirname);
 
         stdout.prepare();
         assert.deepEqual(processor.getOptions(), undefined);
@@ -271,7 +276,7 @@ test('it should throw when receive invalid option', () => {
             '',
             '',
             flag
-        ], stdout, stderr);
+        ], stdout, stderr, __dirname);
 
         assert.deepEqual(processor.getOptions(), undefined);
 
@@ -285,10 +290,10 @@ test('it should --ignore files', () => {
     assert.deepEqual(new ArgumentsProcessor([
         '',
         '',
-        '--ignore', path.resolve(__dirname, 'babel-test.js'),
-        path.resolve(__dirname, 'configure-enzyme.ts'),
-        path.resolve(__dirname, 'babel-test.js')
-    ], stdout, stderr).getOptions(), {
+        '--ignore', './babel-test.js',
+        './configure-enzyme',
+        './babel-test.js'
+    ], stdout, stderr, __dirname).getOptions(), {
         files: [path.resolve(__dirname, 'configure-enzyme.ts')],
         ignore: [path.resolve(__dirname, 'babel-test.js')],
         reporter: new ReporterDefault(stdout, stderr)
@@ -301,13 +306,11 @@ test('it sould resolve ignore pattern', () => {
     assert.deepEqual(new ArgumentsProcessor([
         '',
         '',
-        '--ignore=test/utilities/**/*.js',
-        'test/**/*.js'
-    ], stdout, stderr).getOptions(), {
-        files: sync(__dirname + '/**/*.js').filter((file) => {
-            return sync(__dirname + '/utilities/**/*.js').indexOf(file) == -1;
-        }),
-        ignore: sync(__dirname + '/utilities/**/*.js'),
+        '--ignore=./test/*.js',
+        './test/*.js'
+    ], stdout, stderr, __dirname).getOptions(), {
+        files: [],
+        ignore: glob.sync(__dirname + '/utilities/**/*.js'),
         reporter: new ReporterDefault(stdout, stderr)
     });
 });

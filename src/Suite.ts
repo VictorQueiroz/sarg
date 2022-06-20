@@ -1,8 +1,9 @@
-import Test, { TestExecutor } from "./test";
-import { BeforeExecutor, AfterEachExecutor, AfterExecutor, BeforeEachExecutor } from "./sarg";
-import { boundMethod } from "autobind-decorator";
+import Test, { TestExecutor } from './Test';
+import { BeforeExecutor, AfterEachExecutor, AfterExecutor, BeforeEachExecutor } from './Sarg';
+import { boundMethod } from 'autobind-decorator';
 
 export default class Suite {
+    public isSargTestSuite = true;
     public readonly tests = new Map<string, Test>();
     public readonly afterSet = new Set<AfterExecutor>();
     public readonly beforeSet = new Set<BeforeExecutor>();

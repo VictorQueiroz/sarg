@@ -1,4 +1,4 @@
-import SargWatched, { SargWatchedOptions } from '../../src/sarg-watched';
+import SargWatched, { SargWatchedOptions } from '../../src/SargWatched';
 
 type Listener = (...args: any[]) => void;
 
@@ -8,22 +8,22 @@ type Listener = (...args: any[]) => void;
  * each time running is done
  */
 export default class SargCounted extends SargWatched {
-    private runCount = 0;
+    public runCount = 0;
     private events = new Map<string, Array<(...args: any[]) => void>>();
     constructor(options: SargWatchedOptions) {
         super(options);
         this.runCount = 0;
     }
-    public async run() {
+    public override async run() {
         await super.run();
         ++this.runCount;
         this.emit('finished');
     }
-    public onFileChanged(file: string) {
+    public override onFileChanged(file: string) {
         this.emit('fsChanged');
         super.onFileChanged(file);
     }
-    public destroy() {
+    public override destroy() {
         this.events = new Map();
         super.destroy();
     }

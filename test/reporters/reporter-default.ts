@@ -1,8 +1,8 @@
-import ReporterDefault from '../../src/reporters/reporter-default';
+import ReporterDefault from '../../src/reporters/ReporterDefault';
 import WriteStream from '../write-stream';
-import Test from '../../src/test';
+import Test from '../../src/Test';
 import {expect} from 'chai';
-import Suite from '../../src/suite';
+import Suite from '../../src/Suite';
 
 const suite = new Suite();
 const {test} = suite;
@@ -31,11 +31,11 @@ test('it should show cool diff for assertion mismatches', async () => {
     stderr.expect(/\n/);
     stderr.expect(/\+ Expected/);
     stderr.expect(/\//);
-    stderr.expect(/\- Actual/);
+    stderr.expect(/- Actual/);
     stderr.expect(/\n\n/);
     stderr.expect(/\{\n/);
-    stderr.expect(/\"users\": \[\]/);
-    stderr.expect(/Victor/, /name/, /\"users\"/);
+    stderr.expect(/"users": \[\]/);
+    stderr.expect(/Victor/, /name/, /"users"/);
 });
 
 // test('it should report failures', async () => {
@@ -104,7 +104,7 @@ test('it should stringify the object given instead of an error through a throw s
     });
 
     stderr.expect(/failed to load test\.js/);
-    stderr.expect(/\{\"a\"\:1\}/);
+    stderr.expect(/\{"a":1\}/);
 });
 
 test('it should print native Error instance', () => {
@@ -116,7 +116,7 @@ test('it should print native Error instance', () => {
     reporter.failRequire(new Error('can\'t load it'));
 
     stderr.expect(/failed to load test\.js/);
-    stderr.expect(/can\'t load it/);
+    stderr.expect(/can't load it/);
 });
 
 export default suite;

@@ -1,7 +1,7 @@
 import { boundMethod } from 'autobind-decorator';
-import * as chokidar from 'chokidar';
-import * as path from 'path';
-import Sarg, { SargOptions } from './sarg';
+import chokidar from 'chokidar';
+import path from 'path';
+import Sarg, { SargOptions } from './Sarg';
 
 export type SargWatchedOptions = SargOptions & {
     watch: string[];
@@ -9,22 +9,27 @@ export type SargWatchedOptions = SargOptions & {
 };
 
 export default class SargWatched extends Sarg {
-    private watcher: chokidar.FSWatcher;
-    private runTestsTimer?: NodeJS.Timer;
-    private reloadTimeout: number;
-    private changedFiles = new Array<string>();
+    #watcher: chokidar.FSWatcher;
+    #runTestsTimer: NodeJS.Timer | null;
+    #reloadTimeout: number;
+    changedFiles = new Array<string>();
 
-    constructor(private watchOptions: SargWatchedOptions) {
+    constructor(watchOptions: SargWatchedOptions) {
         super(watchOptions);
 
-        this.watcher = chokidar.watch(this.watchOptions.watch);
-        this.watcher.on('change', this.onFileChanged);
+        const {
+            watch,
+            reloadTimeout
+        } = watchOptions;
 
-        this.reloadTimeout = this.watchOptions.reloadTimeout;
+        this.#runTestsTimer = null;
+        this.#watcher = chokidar.watch(watch);
+        this.#watcher.on('change', this.onFileChanged);
+        this.#reloadTimeout = reloadTimeout;
     }
 
-    public destroy() {
-        this.watcher.close();
+    public override destroy() {
+        this.#watcher.close();
         super.destroy();
     }
 
@@ -38,13 +43,13 @@ export default class SargWatched extends Sarg {
             if(this.isTestFile(changedFile)) {
                 this.invalidateTest(changedFile);
             }
-            delete require.cache[changedFile];
+            require.cache[changedFile] = undefined;
         }
         this.changedFiles = [];
         this.run();
     }
 
-    public onFinishTests() {
+    public override onFinishTests() {
         this.invalidateAndRun();
     }
 
@@ -53,9 +58,9 @@ export default class SargWatched extends Sarg {
         this.changedFiles = this.changedFiles.concat([
             path.resolve(process.cwd(), changedFile)
         ]);
-        if(this.runTestsTimer) {
-            clearTimeout(this.runTestsTimer);
+        if(this.#runTestsTimer) {
+            clearTimeout(this.#runTestsTimer);
         }
-        this.runTestsTimer = setTimeout(this.invalidateAndRun, this.reloadTimeout);
+        this.#runTestsTimer = setTimeout(this.invalidateAndRun, this.#reloadTimeout);
     }
 }

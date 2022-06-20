@@ -1,11 +1,11 @@
 // import { test } from '../src';
-// import ArgumentsProcessor from '../src/arguments-processor';
+// import ArgumentsProcessor from '../src/ArgumentsProcessor';
 // import WriteStream from './write-stream';
 // import * as fs from 'fs';
 // import * as path from 'path';
 // import { strict as assert } from 'assert';
 // import SargCounted from './utilities/sarg-counted';
-// import Test from '../src/test';
+// import Test from '../src/Test';
 
 // test('it should execute tests again just once no matter how many times files are changed', async () => {
 //     const tmpFile = '/tmp/sarg-file.js';

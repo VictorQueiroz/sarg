@@ -1,5 +1,5 @@
-import * as assert from 'assert';
-import Suite from '../../src/suite';
+import assert from 'assert';
+import Suite from '../../src/Suite';
 
 const suite = new Suite();
 const {test} = suite;
@@ -7,7 +7,5 @@ const {test} = suite;
 test('it should get executed', () => {
     assert.ok(true);
 });
-
-require('../../src').test('test', () => {});
 
 export default suite;

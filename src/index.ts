@@ -1,44 +1,9 @@
-import ArgumentsProcessor from './arguments-processor';
-import Sarg, { AfterEachExecutor, AfterExecutor, BeforeEachExecutor, BeforeExecutor } from './sarg';
-import SargWatched from './sarg-watched';
-import Test, { TestExecutor } from './test';
+#!/usr/bin/env node
 
-let instance: Sarg | undefined;
-const options = new ArgumentsProcessor(
-    process.argv,
-    process.stdout,
-    process.stderr
-).getOptions();
-
-if(options && !options.watch) {
-    instance = new Sarg(options);
-} else if(options && Array.isArray(options.watch)) {
-    const {
-        watch,
-        reloadTimeout = 0
-    } = options;
-
-    instance = new SargWatched({
-        reloadTimeout,
-        ...options,
-        watch
-    });
-}
-
-function getSarg() {
-    if(!sarg)
-        throw new Error('No sarg instance found');
-
-    return sarg;
-}
-
-function getFilename() {
-    const filename = getSarg().getFilename();
-    if(!filename) {
-        throw new Error('No file is being processed');
-    }
-    return filename;
-}
+import ArgumentsProcessor from './ArgumentsProcessor';
+import Sarg, { AfterEachExecutor, AfterExecutor, BeforeEachExecutor, BeforeExecutor } from './Sarg';
+import SargWatched from './SargWatched';
+import Test, { TestExecutor } from './Test';
 
 let showedDeprecationWarning = false;
 function showDeprecationWarning() {
@@ -51,36 +16,65 @@ function showDeprecationWarning() {
     showedDeprecationWarning = true;
 }
 
-export const sarg = instance;
+let instance: Sarg;
+const options = new ArgumentsProcessor(
+    process.argv,
+    process.stdout,
+    process.stderr,
+    process.cwd()
+).getOptions();
+
+if(options !== null){
+    if(Array.isArray(options.watch)){
+        const {
+            watch,
+            reloadTimeout = 100
+        } = options;
+
+        instance = new SargWatched({
+            reloadTimeout,
+            ...options,
+            watch
+        });
+    } else {
+        instance = new Sarg(options);
+    }
+    instance.run().catch(reason => {
+        console.error('failed to run sarg instance with error: %o', reason);
+    });
+}
+
+function getFilename() {
+    const filename = instance.getFilename();
+    if(!filename) {
+        throw new Error('No file is being processed');
+    }
+    return filename;
+}
+
 export function test(label: string, executor: TestExecutor) {
     showDeprecationWarning();
-    getSarg().addTest(new Test(label, executor), getFilename());
+    instance.addTest(new Test(label, executor), getFilename());
 }
 
 export function beforeEach(executor: BeforeEachExecutor) {
     showDeprecationWarning();
-    getSarg().addBeforeEach(executor, getFilename());
+    instance.addBeforeEach(executor, getFilename());
 }
 
 export function afterEach(executor: AfterEachExecutor) {
     showDeprecationWarning();
-    getSarg().addAfterEach(executor, getFilename());
+    instance.addAfterEach(executor, getFilename());
 }
 
 export function after(executor: AfterExecutor) {
     showDeprecationWarning();
-    getSarg().addAfter(executor, getFilename());
+    instance.addAfter(executor, getFilename());
 }
 
 export function before(executor: BeforeExecutor) {
     showDeprecationWarning();
-    getSarg().addBefore(executor, getFilename());
+    instance.addBefore(executor, getFilename());
 }
 
-export { default as Suite } from './suite';
-
-if(instance && !instance.isRunning()) {
-    instance.run();
-}
-
-export default instance;
+export { default as Suite } from './Suite';

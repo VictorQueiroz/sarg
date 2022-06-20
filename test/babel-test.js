@@ -1,9 +1,9 @@
-import { strict as assert } from 'assert';
-import * as glob from 'glob';
-import * as path from 'path';
+import assert from 'assert';
+import glob from 'glob';
+import path from 'path';
 import reducer from './reducers/counter';
 import * as actions from './reducers/counter';
-import Suite from '../src/suite';
+import Suite from '../src/Suite';
 
 const suite = new Suite();
 const {test} = suite;

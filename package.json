@@ -1,9 +1,10 @@
 {
   "name": "sarg",
-  "version": "4.0.2",
+  "version": "5.0.5",
   "description": "",
-  "main": "lib/index.js",
+  "main": "./lib/src/index.js",
   "scripts": {
+    "prepublishOnly": "make release",
     "test": "make test"
   },
   "keywords": [
@@ -14,54 +15,58 @@
     "insurance"
   ],
   "files": [
-    "lib/**/*.*",
-    "bin/sarg"
+    "lib/**/*.{js,map,d.ts}"
   ],
-  "typings": "./lib/index.d.ts",
   "bin": {
-    "sarg": "./bin/sarg"
+    "sarg": "./lib/src/index.js"
   },
   "author": "Victor Queiroz <victorcqueirozg@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "autobind-decorator": "^2.4.0",
     "chalk": "^2.4.1",
-    "chokidar": "^2.0.4",
-    "glob": "^7.1.2"
+    "chokidar": "3.x",
+    "glob": "8.x"
   },
   "devDependencies": {
-    "@babel/cli": "^7.4.4",
-    "@babel/core": "^7.4.5",
-    "@babel/preset-env": "^7.4.5",
-    "@babel/preset-react": "^7.0.0",
-    "@babel/register": "^7.4.4",
+    "@babel/cli": "7.x",
+    "@babel/core": "7.x",
+    "@babel/preset-env": "7.x",
+    "@babel/preset-react": "7.x",
+    "@babel/register": "7.x",
     "@types/chai": "^4.2.0",
     "@types/chokidar": "^1.7.5",
-    "@types/diff": "^4.0.2",
+    "@types/diff": "5.x",
     "@types/enzyme": "^3.9.2",
     "@types/enzyme-adapter-react-16": "^1.0.5",
     "@types/glob": "^5.0.35",
-    "@types/node": "^10.5.2",
+    "@types/node": "16.x",
     "@types/react": "^16.0.18",
     "@types/sinon": "^7.0.11",
     "@types/sinon-chai": "^3.2.2",
+    "@typescript-eslint/eslint-plugin": "^5.27.1",
+    "@typescript-eslint/parser": "^5.27.1",
     "chai": "^4.2.0",
-    "diff": "^4.0.1",
-    "enzyme": "^3.1.0",
-    "enzyme-adapter-react-16": "^1.13.1",
-    "nyc": "^14.1.1",
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0",
+    "diff": "5.x",
+    "enzyme": "3.x",
+    "enzyme-adapter-react-16": "1.x",
+    "eslint": "8.x",
+    "nyc": "15.x",
+    "react": "16.x",
+    "react-dom": "16.x",
     "sinon": "^7.3.2",
-    "source-map-support": "^0.5.6",
-    "ts-node": "^3.3.0",
-    "tslint": "^5.16.0",
-    "typescript": "^3.4.5"
+    "source-map-support": "0.x",
+    "ts-node": "10.x",
+    "typescript": "4.x"
   },
   "nyc": {
     "extension": [
       ".ts",
       ".js"
     ]
+  },
+  "resolutions": {
+    "cheerio":"0.22.0",
+    "@types/node":"16.x"
   }
 }

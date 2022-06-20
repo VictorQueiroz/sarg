@@ -1,4 +1,4 @@
-import { strict as assert } from 'assert';
+import assert from 'assert';
 import { Duplex } from 'stream';
 
 type StreamCallback = (error?: Error | null) => void;
@@ -6,7 +6,7 @@ type StreamCallback = (error?: Error | null) => void;
 export default class WriteStream extends Duplex {
     private pending?: Promise<void>;
     private items = new Array<string>();
-    public _write(chunk: string, _ENCODING: string, callback: StreamCallback) {
+    public override _write(chunk: string, _ENCODING: string, callback: StreamCallback) {
         this.items.push(chunk);
         callback();
     }
@@ -31,8 +31,8 @@ export default class WriteStream extends Duplex {
             assert.deepEqual(buffer, Buffer.from(chunk, 'utf8'));
         }
     }
-    public end() {
-        return;
+    public override end() {
+        return this;
     }
     /**
      * Return pending operations on this stream (i.e. pipe)

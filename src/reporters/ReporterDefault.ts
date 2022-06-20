@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import * as path from 'path';
-import Reporter, { ReporterEvents } from './reporter';
+import Reporter, { ReporterEvents } from './Reporter';
 import { diffJson } from 'diff';
 
 export default class ReporterDefault extends Reporter {
@@ -41,7 +41,7 @@ export default class ReporterDefault extends Reporter {
                 this.printReadableFailure();
                 break;
             case ReporterEvents.SucceedTest:
-            case ReporterEvents.FailTest:
+            case ReporterEvents.FailTest: {
                 if(!test)
                     throw new Error('no test specified');
 
@@ -50,16 +50,17 @@ export default class ReporterDefault extends Reporter {
                 if(test.timeElapsed() > 0)
                     timeElapsed = ` (${test.timeElapsed()}ms)`;
 
-                if(event == ReporterEvents.SucceedTest)
+                if(event == ReporterEvents.SucceedTest) {
                     this.stdout.write(chalk.green(`  \u2713 ${test.name()}${timeElapsed}\n`));
-                else {
+                } else {
                     this.stderr.write(chalk.red(`  \u2715 ${test.name()}${timeElapsed}\n`));
                     this.printReadableFailure();
                 }
+            }
         }
     }
 
-    private reindent(text: string, indent: number = 2): string {
+    #reindent(text: string, indent = 2): string {
         const strings = text.split('\n');
 
         // console.log(strings);
@@ -84,12 +85,14 @@ export default class ReporterDefault extends Reporter {
         } else */if(this.failure && this.failure.expected && this.failure.actual) {
             const changes = diffJson(this.failure.expected, this.failure.actual);
             this.stderr.write('\n');
-            this.stderr.write(this.reindent(chalk.green('+ Expected'), 2));
+            this.stderr.write(this.#reindent(chalk.green('+ Expected'), 2));
             this.stderr.write(' / ');
             this.stderr.write(chalk.red('- Actual'));
             this.stderr.write('\n\n');
-            for(let {value, removed, added} of changes) {
-                value = this.reindent(value, 2);
+            for(const change of changes) {
+                let {value} = change;
+                const {removed, added} = change;
+                value = this.#reindent(value, 2);
                 if(removed) {
                     value = chalk.red(value);
                 } else if(added) {
@@ -101,12 +104,12 @@ export default class ReporterDefault extends Reporter {
             this.stderr.write('\n');
         } else if(this.failure && (this.failure.stack || this.failure.message)) {
             if(this.failure.stack) {
-                this.stderr.write(this.reindent(this.failure.stack, 2));
+                this.stderr.write(this.#reindent(this.failure.stack, 2));
             } else if(this.failure.message) {
-                this.stderr.write(this.reindent(this.failure.message, 2));
+                this.stderr.write(this.#reindent(this.failure.message, 2));
             }
         } else if(this.failure) {
-            this.stderr.write(this.reindent(JSON.stringify(this.failure), 2));
+            this.stderr.write(this.#reindent(JSON.stringify(this.failure), 2));
         }
     }
     public warn(message: string) {

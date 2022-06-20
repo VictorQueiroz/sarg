@@ -69,7 +69,7 @@ It works well with TypeScript and Babel register, you're free to use it together
 ```sh
 npx sarg \
     --require @babel/register \
-    -w src/tests/**/*.* test/**/*.{js,ts,tsx,jsx}
+    -w src/Tests/**/*.* test/**/*.{js,ts,tsx,jsx}
 ```
 
 ### TypeScript

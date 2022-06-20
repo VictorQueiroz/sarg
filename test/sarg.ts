@@ -1,8 +1,8 @@
 import { spy } from 'sinon';
-import ReporterDefault from '../src/reporters/reporter-default';
-import Sarg from "../src/sarg";
+import ReporterDefault from '../src/reporters/ReporterDefault';
+import Sarg from "../src/Sarg";
 import WriteStream from './write-stream';
-import Suite from '../src/suite';
+import Suite from '../src/Suite';
 
 const suite = new Suite();
 const {test} = suite;

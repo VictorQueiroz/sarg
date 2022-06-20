@@ -23,8 +23,6 @@ export default class Test {
         this.startDate = new Date();
         try {
             await this.executor();
-        } catch(reason) {
-            throw reason;
         } finally {
             this.endDate = new Date();
         }

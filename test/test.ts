@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
-import Test from '../src/test';
-import Suite from '../src/suite';
+import Test from '../src/Test';
+import Suite from '../src/Suite';
 
 const suite = new Suite();
 const {test} = suite;

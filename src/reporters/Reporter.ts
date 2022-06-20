@@ -1,4 +1,5 @@
-import Test from "../test";
+import { Duplex } from 'stream';
+import Test from '../Test';
 
 export enum ReporterEvents {
     StartTest,
@@ -35,8 +36,8 @@ export default abstract class Reporter {
      */
     public filename?: string;
 
-    public failuresCount: number = 0;
-    public successesCount: number = 0;
+    public failuresCount = 0;
+    public successesCount = 0;
 
     /**
      * Current failure description object. It'll be
@@ -51,8 +52,8 @@ export default abstract class Reporter {
     };
 
     constructor(
-        public stdout: NodeJS.WriteStream,
-        public stderr: NodeJS.WriteStream
+        public stdout: Duplex,
+        public stderr: Duplex
     ) {}
     /* tslint:disable member-access */
     abstract describe(event: ReporterEvents): void;

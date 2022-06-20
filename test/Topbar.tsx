@@ -1,8 +1,7 @@
 import { Component } from 'react';
-import * as React from 'react';
 
-export default class Topbar extends Component<{}, {}> {
-    public render(): JSX.Element {
+export default class Topbar extends Component {
+    public override render() {
         return (
             <div>
                 Topbar test

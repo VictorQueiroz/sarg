@@ -1,13 +1,9 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "module": "commonjs",
-    "lib": ["esnext"],
-    "allowJs": true,
-    "checkJs": false,
-    "jsx": "react",
-    "experimentalDecorators": true,
-    "strict": true,
-    "moduleResolution": "node"
-  }
+    "extends":"../tsconfig.base.json",
+    "compilerOptions": {
+        "jsx": "react-jsxdev"
+    },
+    "references": [
+        {"path": "../src"}
+    ]
 }
