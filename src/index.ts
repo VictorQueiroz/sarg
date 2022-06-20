@@ -2,8 +2,10 @@
 
 import ArgumentsProcessor from './ArgumentsProcessor';
 import Sarg, { AfterEachExecutor, AfterExecutor, BeforeEachExecutor, BeforeExecutor } from './Sarg';
-import SargWatched from './SargWatched';
 import Test, { TestExecutor } from './Test';
+import SargWatched from './SargWatched';
+
+export { default as Suite } from './Suite';
 
 let showedDeprecationWarning = false;
 function showDeprecationWarning() {
@@ -76,5 +78,3 @@ export function before(executor: BeforeExecutor) {
     showDeprecationWarning();
     instance.addBefore(executor, getFilename());
 }
-
-export { default as Suite } from './Suite';

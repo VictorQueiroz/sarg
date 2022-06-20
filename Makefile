@@ -1,7 +1,7 @@
 release:
 	rm -frv lib && \
 	npx tsc -b src test && \
-	cp -v HELP LICENSE lib && \
+	cp -v HELP LICENSE package.json lib && \
 	node -e 'console.log("---\nnew build for version %s generated", require("chalk").blue(require("./package.json").version))'
 
 test:

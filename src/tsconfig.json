@@ -1,8 +1,10 @@
 {
     "extends":"../tsconfig.base.json",
+    "compilerOptions": {
+        "isolatedModules": true
+    },
     "include": [
         "*.ts",
-        "reporters/*.ts",
-        "../package.json"
+        "reporters/*.ts"
     ]
 }

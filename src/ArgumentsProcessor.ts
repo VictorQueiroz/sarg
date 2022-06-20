@@ -1,10 +1,10 @@
 import { createReadStream } from 'fs';
 import glob from 'glob';
 import path from 'path';
+import fs from 'fs';
 import { Duplex } from 'stream';
 import ReporterDefault from './reporters/ReporterDefault';
 import { SargOptions } from './Sarg';
-import packageJson from '../package.json';
 
 export default class ArgumentsProcessor {
     readonly #argv;
@@ -87,9 +87,16 @@ export default class ArgumentsProcessor {
                     options.teardownScript = require.resolve(argv[++i]);
                     break;
                 case '-v':
-                case '--version':
-                    this.#stdout.write(`${packageJson.version}\n`);
+                case '--version': {
+                    const {version} = JSON.parse(
+                        fs.readFileSync(
+                            path.resolve(__dirname,'../package.json'),
+                            'utf8'
+                        )
+                    );
+                    this.#stdout.write(`${version}\n`);
                     return null;
+                }
                 case '--license':
                     createReadStream(path.resolve(__dirname, '../LICENSE')).on('close', () => {
                         this.#stdout.write('\n');
