@@ -2,6 +2,7 @@ import { createReadStream } from 'fs';
 import glob from 'glob';
 import path from 'path';
 import fs from 'fs';
+import inspector from 'inspector';
 import { Duplex } from 'stream';
 import ReporterDefault from './reporters/ReporterDefault';
 import { SargOptions } from './Sarg';
@@ -40,6 +41,9 @@ export default class ArgumentsProcessor {
         let i: number;
         for(i = 2; i < ii; i++) {
             switch(argv[i]) {
+                case '--inspect':
+                    inspector.open();
+                    break;
                 case '-b':
                 case '--bail':
                     options.bail = true;

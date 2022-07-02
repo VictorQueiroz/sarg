@@ -1,6 +1,6 @@
 {
   "name": "sarg",
-  "version": "5.0.10",
+  "version": "5.0.11",
   "description": "",
   "main": "./lib/src/index.js",
   "scripts": {
